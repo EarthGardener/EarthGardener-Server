@@ -1,0 +1,89 @@
+package com.stopclimatechange.earthgarden.domain;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.stopclimatechange.earthgarden.util.RandomGenerator;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+@Entity
+@Table(name = "user")
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class User extends Timestamped implements UserDetails {
+
+    @Id
+    @JsonIgnore
+    @GeneratedValue(generator = RandomGenerator.generatorName)
+    @GenericGenerator(name = RandomGenerator.generatorName, strategy = "com.stopclimatechange.earthgarden.util.RandomGenerator")
+    private String id;
+
+    private String email;
+
+    @JsonIgnore
+    private String pw;
+
+    private String nickname;
+
+    @Column(nullable = true)
+    private String image_url;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
+
+    public User(UserDto requestDto) {
+        this.email = requestDto.getEmail();
+        this.pw = requestDto.getPw();
+        this.nickname = requestDto.getNickname();
+        this.image_url = requestDto.getImage_url();
+        this.roles = requestDto.getRoles();
+        System.out.println(roles.toString());
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
+        return null;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+}
