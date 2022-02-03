@@ -49,7 +49,6 @@ public class User extends Timestamped implements UserDetails {
         this.nickname = requestDto.getNickname();
         this.image_url = requestDto.getImage_url();
         this.roles = requestDto.getRoles();
-        System.out.println(roles.toString());
     }
 
     @Override

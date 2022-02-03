@@ -15,7 +15,6 @@ public class ImageUploadService {
 
     /*localhost에서 실행시키면 C:\\upload 에 저장된다.*/
     private static final String SAVE_PATH = "/upload";
-    //private static final String PREFIX_URL = "/upload/";
 
     public String restore(MultipartFile multipartFile) {
         String url = null;
