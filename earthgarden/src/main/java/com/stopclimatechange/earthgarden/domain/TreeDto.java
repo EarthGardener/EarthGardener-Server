@@ -27,6 +27,14 @@ public class TreeDto {
     @NotNull
     private Integer month_sum;
 
+    public TreeDto(Tree tree){
+        this.name = tree.getName();
+        this.level = tree.getLevel();
+        this.exp = tree.getExp();
+        this.total_sum = tree.getTotal_sum();
+        this.month_sum = tree.getMonth_sum();
+    }
+
     @Getter
     @Setter
     public static class NameDto{

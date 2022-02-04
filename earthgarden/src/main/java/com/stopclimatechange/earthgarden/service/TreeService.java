@@ -18,4 +18,10 @@ public class TreeService {
         tree.updateTreeName(nameDto.getName());
         treeRepository.save(tree);
     }
+
+    public TreeDto returnTreeInfo(User user){
+        Tree tree = user.getTree();
+        TreeDto treeInfo = new TreeDto(tree);
+        return treeInfo;
+    }
 }

@@ -32,4 +32,17 @@ public class TreeController {
         responseMap.put("message", nameDto.getName() + "으로 이름 변경 성공");
         return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/tree/info")
+    public ResponseEntity<HashMap> giveNameToTree(@RequestHeader("X-AUTH-TOKEN") String token) {
+
+        User user = userService.findUserByEmail(jwtTokenProvider.getUserEmail(token));
+        TreeDto treeDto = treeService.returnTreeInfo(user);
+
+        HashMap<String, Object> responseMap = new HashMap<>();
+        responseMap.put("status", 200);
+        responseMap.put("data", treeDto);
+        responseMap.put("message", "나무 정보 불러오기 성공");
+        return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+    }
 }
