@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stopclimatechange.earthgarden.util.RandomGenerator;
 import com.sun.istack.NotNull;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 
 @Entity
 @Getter
-public class Tree extends Timestamped{
+public class Post extends Timestamped{
 
     @Id
     @JsonIgnore
@@ -19,34 +19,22 @@ public class Tree extends Timestamped{
     @GenericGenerator(name = RandomGenerator.generatorName, strategy = "com.stopclimatechange.earthgarden.util.RandomGenerator")
     private String id;
 
-    @NotNull
-    private String name;
+    @ManyToOne
+    @JoinColumn(name ="user_id")
+    private User user;
 
     @NotNull
-    private Integer level;
+    private String title;
 
     @NotNull
     private Integer exp;
 
-    @NotNull
-    private Integer total_sum;
+    private Integer checklist_1;
 
-    @NotNull
-    private Integer month_sum;
+    private Integer checklist_2;
 
-    public Tree(){
-        name = "tree";
-        level = 1;
-        exp = 0;
-        total_sum = 0;
-        month_sum = 0;
-    }
+    private Integer checklist_3;
 
-    public void updateByTreeDto(TreeDto treeDto){
-        name = treeDto.getName();
-        level = treeDto.getLevel();
-        exp = treeDto.getExp();
-        total_sum = treeDto.getTotal_sum();
-        month_sum = treeDto.getMonth_sum();
-    }
+
+
 }

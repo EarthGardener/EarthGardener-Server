@@ -48,6 +48,10 @@ public class User extends Timestamped implements UserDetails {
     @JoinColumn(name="tree_id")
     private Tree tree;
 
+    @NotNull
+    @OneToMany(mappedBy="user")
+    private List<Post> posts = new ArrayList<Post>();
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();

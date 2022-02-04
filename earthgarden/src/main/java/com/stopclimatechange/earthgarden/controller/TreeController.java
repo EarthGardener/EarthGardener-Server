@@ -21,8 +21,6 @@ public class TreeController {
     private final JwtTokenProvider jwtTokenProvider;
     private final TreeService treeService;
 
-
-
     @PostMapping(value = "/tree/name")
     public ResponseEntity<HashMap> giveNameToTree(@RequestHeader("X-AUTH-TOKEN") String token, @RequestBody TreeDto.NameDto nameDto) {
 
