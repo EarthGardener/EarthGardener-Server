@@ -2,6 +2,7 @@ package com.stopclimatechange.earthgarden.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stopclimatechange.earthgarden.util.RandomGenerator;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,26 +30,36 @@ public class User extends Timestamped implements UserDetails {
     @GenericGenerator(name = RandomGenerator.generatorName, strategy = "com.stopclimatechange.earthgarden.util.RandomGenerator")
     private String id;
 
+    @NotNull
     private String email;
 
     @JsonIgnore
+    @NotNull
     private String pw;
 
+    @NotNull
     private String nickname;
 
     @Column(nullable = true)
     private String image_url;
 
+    @NotNull
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name="tree_id")
+    private Tree tree;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
-    public User(UserDto requestDto) {
+
+    public User(UserDto requestDto, Tree tree) {
         this.email = requestDto.getEmail();
         this.pw = requestDto.getPw();
         this.nickname = requestDto.getNickname();
         this.image_url = requestDto.getImage_url();
         this.roles = requestDto.getRoles();
+        this.tree = tree;
     }
 
     @Override

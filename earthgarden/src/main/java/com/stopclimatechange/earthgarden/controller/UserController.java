@@ -3,24 +3,19 @@ package com.stopclimatechange.earthgarden.controller;
 import com.stopclimatechange.earthgarden.config.JwtTokenProvider;
 import com.stopclimatechange.earthgarden.domain.User;
 import com.stopclimatechange.earthgarden.domain.UserDto;
-import com.stopclimatechange.earthgarden.repository.UserRepository;
 import com.stopclimatechange.earthgarden.service.MailService;
 import com.stopclimatechange.earthgarden.service.UserService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collections;
 import java.util.HashMap;
 
 @CrossOrigin
-@Controller
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -93,7 +88,6 @@ public class UserController {
             responseMap.put("status", 200);
             responseMap.put("message", "로그인 성공");
             responseMap.put("token", jwtTokenProvider.createToken(user.getEmail(), user.getRoles()));
-            System.out.println(user.getRoles().toString());
             return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
         }
         else {

@@ -18,4 +18,6 @@ public interface UserService {
 
     public Boolean validateDuplicateNickname(String nickname);
 
+    public User findUserByEmail(String email);
+
 }
