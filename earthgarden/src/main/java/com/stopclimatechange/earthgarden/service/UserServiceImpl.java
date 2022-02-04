@@ -39,11 +39,13 @@ public class UserServiceImpl implements UserService{
         return user;
     }
 
-    private Boolean validateDuplicateEmail(String email){
+    @Override
+    public Boolean validateDuplicateEmail(String email){
         return userRepository.existsByEmail(email);
     }
 
-    private Boolean validateDuplicateNickname(String nickname){
+    @Override
+    public Boolean validateDuplicateNickname(String nickname){
         return userRepository.existsByNickname(nickname);
     }
 

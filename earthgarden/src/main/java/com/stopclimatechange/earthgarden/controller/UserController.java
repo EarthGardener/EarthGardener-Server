@@ -27,6 +27,49 @@ public class UserController {
 
     private final UserService userService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final MailService mailService;
+
+    @GetMapping(value = "/user/signup/email")
+    public ResponseEntity<HashMap> checkValidEmail(@RequestBody UserDto.EmailDto emailDto){
+
+        Boolean isExist = userService.validateDuplicateEmail(emailDto.getEmail());
+
+        HashMap<String, Object> responseMap = new HashMap<>();
+        if(isExist){
+            responseMap.put("status", 409);
+            responseMap.put("code", null);
+            responseMap.put("message", "중복된 이메일");
+            return new ResponseEntity<HashMap> (responseMap, HttpStatus.CONFLICT);
+        }
+        else{
+            RandomString randomString = new RandomString(6);
+            mailService.sendCheckEmail(emailDto.getEmail(), randomString.nextString());
+            responseMap.put("status", 200);
+            responseMap.put("code", randomString.nextString());
+            responseMap.put("message", "사용 가능한 이메일, 코드 발급됨");
+            return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping(value = "/user/signup/nickname")
+    public ResponseEntity<HashMap> checkValidNickname(@RequestBody UserDto.NicknameDto nicknameDto){
+
+        Boolean isExist = userService.validateDuplicateNickname(nicknameDto.getNickname());
+
+        HashMap<String, Object> responseMap = new HashMap<>();
+        if(isExist){
+            responseMap.put("status", 409);
+            responseMap.put("message", "중복된 닉네임");
+            return new ResponseEntity<HashMap> (responseMap, HttpStatus.CONFLICT);
+        }
+        else{
+            responseMap.put("status", 200);
+            responseMap.put("message", "사용 가능한 닉네임");
+            return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+        }
+
+
+    }
 
     @PostMapping(value = "/user/signup",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})

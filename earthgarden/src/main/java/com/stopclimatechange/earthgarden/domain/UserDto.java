@@ -33,7 +33,23 @@ public class UserDto {
     @Getter
     @Setter
     public static class LoginDto {
+        @NotNull
         private String email;
+        @NotNull
         private String pw;
+    }
+
+    @Getter
+    @Setter
+    public static class EmailDto{
+        @NotNull
+        private String email;
+    }
+
+    @Getter
+    @Setter
+    public static class NicknameDto{
+        @NotNull
+        private String nickname;
     }
 }
