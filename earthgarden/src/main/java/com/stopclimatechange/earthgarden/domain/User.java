@@ -49,7 +49,7 @@ public class User extends Timestamped implements UserDetails {
     private Tree tree;
 
     @NotNull
-    @OneToMany(mappedBy="user")
+    @OneToMany(mappedBy="user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<Post>();
 
     @ElementCollection(fetch = FetchType.EAGER)

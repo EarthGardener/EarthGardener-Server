@@ -1,6 +1,7 @@
 package com.stopclimatechange.earthgarden.controller;
 
 import com.stopclimatechange.earthgarden.config.JwtTokenProvider;
+import com.stopclimatechange.earthgarden.domain.TreeDto;
 import com.stopclimatechange.earthgarden.domain.User;
 import com.stopclimatechange.earthgarden.domain.UserDto;
 import com.stopclimatechange.earthgarden.service.MailService;
@@ -74,12 +75,19 @@ public class UserController {
                                           @RequestPart(value = "nickname") String nickname,
                                           @RequestPart(value = "image", required = false) MultipartFile image) {
 
-        User user = userService.signUp(email, pw, nickname, image);
-
         HashMap<String, Object> responseMap = new HashMap<>();
-        responseMap.put("status", 200);
-        responseMap.put("message", "회원가입 성공");
-        return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+        if(userService.validateDuplicateEmail(email)){
+            responseMap.put("status", 409);
+            responseMap.put("message", "잘못된 접근. 중복 여부 확인 요함");
+            return new ResponseEntity<HashMap>(responseMap, HttpStatus.CONFLICT);
+        }
+        else {
+            User user = userService.signUp(email, pw, nickname, image);
+
+            responseMap.put("status", 200);
+            responseMap.put("message", "회원가입 성공");
+            return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+        }
 
     }
 
@@ -99,5 +107,17 @@ public class UserController {
             responseMap.put("message", "이메일 또는 비밀번호 오류");
             return new ResponseEntity<HashMap>(responseMap, HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    @GetMapping(value = "/user/profile")
+    public ResponseEntity<HashMap> getProfile(@RequestHeader("X-AUTH-TOKEN") String token) {
+
+        User user = userService.findUserByEmail(jwtTokenProvider.getUserEmail(token));
+        UserDto.ProfileDto profileDto = new UserDto.ProfileDto(user);
+        HashMap<String, Object> responseMap = new HashMap<>();
+        responseMap.put("status", 200);
+        responseMap.put("message", "조회 완료");
+        responseMap.put("data", profileDto);
+        return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
     }
 }

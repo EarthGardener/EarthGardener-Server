@@ -20,4 +20,6 @@ public interface UserService {
 
     public User findUserByEmail(String email);
 
+    public void saveUpdatedUser(User user);
+
 }

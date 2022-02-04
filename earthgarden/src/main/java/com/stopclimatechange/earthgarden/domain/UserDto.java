@@ -37,4 +37,21 @@ public class UserDto {
         private String pw;
     }
 
+    @Getter
+    @Setter
+    public static class ProfileDto {
+        @NotNull
+        private String email;
+        @NotNull
+        private String nickname;
+
+        private String image_url;
+
+        public ProfileDto(User user){
+            email = user.getEmail();
+            nickname = user.getNickname();
+            image_url= user.getImage_url();
+        }
+    }
+
 }
