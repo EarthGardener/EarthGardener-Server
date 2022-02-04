@@ -38,9 +38,10 @@ public class UserController {
         }
         else{
             RandomString randomString = new RandomString(6);
-            mailService.sendCheckEmail(email, randomString.nextString());
+            String code = randomString.nextString();
+            mailService.sendCheckEmail(email, code);
             responseMap.put("status", 200);
-            responseMap.put("code", randomString.nextString());
+            responseMap.put("code", code);
             responseMap.put("message", "사용 가능한 이메일, 코드 발급됨");
             return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
         }
