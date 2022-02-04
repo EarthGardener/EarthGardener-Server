@@ -26,13 +26,9 @@ public class PostService {
     public List<PostDto> findFitPost(User user, String date){
         Integer year = Integer.parseInt(handlingDate(date)[0]);
         Integer month = Integer.parseInt(handlingDate(date)[1]);
-        System.out.println(year);
-        System.out.println(month);
         List<Post> allPost = user.getPosts();
         List<PostDto> fitPosts = new ArrayList<PostDto>();
         for(Post post : allPost){
-            System.out.println(post.getCreatedAt().getYear());
-            System.out.println(post.getCreatedAt().getMonthValue());
             if(post.getCreatedAt().getYear() == year && post.getCreatedAt().getMonthValue() == month){
                 PostDto postDto = new PostDto(post);
                 fitPosts.add(postDto);
