@@ -38,11 +38,12 @@ public class TreeController {
 
         User user = userService.findUserByEmail(jwtTokenProvider.getUserEmail(token));
         TreeDto treeDto = treeService.returnTreeInfo(user);
-
+        Boolean levelUp = treeService.isTreeLevelUp(treeDto);
+        if(levelUp) treeDto = treeService.reflectLevel(user);
         HashMap<String, Object> responseMap = new HashMap<>();
         responseMap.put("status", 200);
         responseMap.put("message", "나무 정보 불러오기 성공");
-        responseMap.put("levelup", treeService.isTreeLevelUp());
+        responseMap.put("levelup", levelUp);
         responseMap.put("user_nickname", user.getNickname());
         responseMap.put("data", treeDto);
         return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);

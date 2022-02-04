@@ -30,7 +30,29 @@ public class TreeService {
         return treeInfo;
     }
 
-    public Boolean isTreeLevelUp(){
+    public Boolean isTreeLevelUp(TreeDto treeDto){
+
+        if (treeDto.getExp() >= (treeDto.getLevel()+1)*500){
+            return true;
+        }
         return false;
+    }
+
+    public TreeDto reflectLevel(User user){
+        Tree tree = user.getTree();
+        TreeDto treeDto = new TreeDto(tree);
+        treeDto.setLevel(tree.getLevel() + 1);
+        treeDto.setExp(tree.getExp()- (tree.getLevel()+1)*500);
+        tree.updateByTreeDto(treeDto);
+        treeRepository.save(tree);
+        return treeDto;
+    }
+
+    public void updateExp(User user, Integer exp){
+        Tree tree = user.getTree();
+        TreeDto treeDto = new TreeDto(tree);
+        treeDto.setExp(exp);
+        tree.updateByTreeDto(treeDto);
+        treeRepository.save(tree);
     }
 }
