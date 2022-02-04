@@ -25,9 +25,9 @@ public class UserController {
     private final MailService mailService;
 
     @GetMapping(value = "/user/signup/email")
-    public ResponseEntity<HashMap> checkValidEmail(@RequestBody UserDto.EmailDto emailDto){
+    public ResponseEntity<HashMap> checkValidEmail(@RequestParam String email){
 
-        Boolean isExist = userService.validateDuplicateEmail(emailDto.getEmail());
+        Boolean isExist = userService.validateDuplicateEmail(email);
 
         HashMap<String, Object> responseMap = new HashMap<>();
         if(isExist){
@@ -38,7 +38,7 @@ public class UserController {
         }
         else{
             RandomString randomString = new RandomString(6);
-            mailService.sendCheckEmail(emailDto.getEmail(), randomString.nextString());
+            mailService.sendCheckEmail(email, randomString.nextString());
             responseMap.put("status", 200);
             responseMap.put("code", randomString.nextString());
             responseMap.put("message", "사용 가능한 이메일, 코드 발급됨");
@@ -47,9 +47,9 @@ public class UserController {
     }
 
     @GetMapping(value = "/user/signup/nickname")
-    public ResponseEntity<HashMap> checkValidNickname(@RequestBody UserDto.NicknameDto nicknameDto){
+    public ResponseEntity<HashMap> checkValidNickname(@RequestParam String nickname){
 
-        Boolean isExist = userService.validateDuplicateNickname(nicknameDto.getNickname());
+        Boolean isExist = userService.validateDuplicateNickname(nickname);
 
         HashMap<String, Object> responseMap = new HashMap<>();
         if(isExist){

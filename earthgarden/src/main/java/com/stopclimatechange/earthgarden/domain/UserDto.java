@@ -37,17 +37,4 @@ public class UserDto {
         private String pw;
     }
 
-    @Getter
-    @Setter
-    public static class EmailDto{
-        @NotNull
-        private String email;
-    }
-
-    @Getter
-    @Setter
-    public static class NicknameDto{
-        @NotNull
-        private String nickname;
-    }
 }
