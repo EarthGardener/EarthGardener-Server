@@ -32,8 +32,8 @@ public class PostService {
 
     public List<CheckMent> chooseMents(){
         List<CheckMent> checkMents = new ArrayList<>();
-        for(int i = 0 ; i < 6; i++){
-            Integer num = Integer.valueOf(((int)(Math.random() * 100) % 30) +1);
+        for(int i = 0 ; i < 5; i++){
+            Integer num = Integer.valueOf(((int)(Math.random() * 18) % 6) +1);
             String ment = CheckList.checkList.get(i*6+num);
             CheckMent checkMent = new CheckMent(i*6+num, ment);
             checkMents.add(checkMent);
