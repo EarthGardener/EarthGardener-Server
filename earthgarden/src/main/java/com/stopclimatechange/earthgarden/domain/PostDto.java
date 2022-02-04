@@ -22,11 +22,16 @@ public class PostDto {
     public PostDto(Post post){
         this.title = post.getTitle();
         this.exp = post.getExp();
-        if(post.getChecklist_1()!=null)
-            this.checklist.add(CheckList.checkList.get(post.getChecklist_1()));
-        if(post.getChecklist_2()!=null)
-            this.checklist.add(CheckList.checkList.get(post.getChecklist_2()));
-        if(post.getChecklist_3()!=null)
-            this.checklist.add(CheckList.checkList.get(post.getChecklist_3()));
+        this.checklist.add(CheckList.checkList.get(post.getChecklist_1()));
+        this.checklist.add(CheckList.checkList.get(post.getChecklist_2()));
+        this.checklist.add(CheckList.checkList.get(post.getChecklist_3()));
+    }
+
+    public PostDto(String title, Integer exp, Integer checklist_1, Integer checklist_2, Integer checklsit_3){
+        this.title = title;
+        this.exp = exp;
+        this.checklist.add(CheckList.checkList.get(checklist_1));
+        this.checklist.add(CheckList.checkList.get(checklist_2));
+        this.checklist.add(CheckList.checkList.get(checklsit_3));
     }
 }
