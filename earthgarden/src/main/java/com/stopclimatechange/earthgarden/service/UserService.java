@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface UserService {
 
     //회원가입
-    public User signUp(UserDto userDto, MultipartFile image);
+    public User signUp(String email, String pw, String nickname, MultipartFile image);
 
     // 로그인할 이메일 & 패스워드 체크
     public User signIn(UserDto.LoginDto userDto);

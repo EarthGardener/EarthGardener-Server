@@ -20,9 +20,12 @@ public class UserServiceImpl implements UserService{
     private final ImageUploadService imageUploadService;
 
     @Override
-    public User signUp(UserDto userDto, MultipartFile image) {
+    public User signUp(String email, String pw, String nickname, MultipartFile image) {
+        UserDto userDto = new UserDto();
         userDto.setRoles(Collections.singletonList("ROLE_USER"));
-        userDto.setPw(passwordEncoder.encode(userDto.getPw()));           // 비밀번호 암호화
+        userDto.setEmail(email);
+        userDto.setNickname(nickname);
+        userDto.setPw(passwordEncoder.encode(pw));           // 비밀번호 암호화
         Tree tree = new Tree();
         if(!image.isEmpty())
             userDto.setImage_url(imageUploadService.restore(image));

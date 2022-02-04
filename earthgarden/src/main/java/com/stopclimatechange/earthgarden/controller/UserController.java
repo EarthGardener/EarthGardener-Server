@@ -69,9 +69,12 @@ public class UserController {
 
     @PostMapping(value = "/user/signup",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<HashMap> create(@RequestPart(value = "user") UserDto userDto, @RequestPart(value = "image", required = false) MultipartFile image) {
+    public ResponseEntity<HashMap> create(@RequestPart(value = "email") String email,
+                                          @RequestPart(value = "pw") String pw,
+                                          @RequestPart(value = "nickname") String nickname,
+                                          @RequestPart(value = "image", required = false) MultipartFile image) {
 
-        User user = userService.signUp(userDto, image);
+        User user = userService.signUp(email, pw, nickname, image);
 
         HashMap<String, Object> responseMap = new HashMap<>();
         responseMap.put("status", 200);
