@@ -51,7 +51,7 @@ public class TreeService {
     public void updateExp(User user, Integer exp){
         Tree tree = user.getTree();
         TreeDto treeDto = new TreeDto(tree);
-        treeDto.setExp(exp);
+        treeDto.setExp(tree.getExp() + exp);
         tree.updateByTreeDto(treeDto);
         treeRepository.save(tree);
     }
