@@ -1,10 +1,7 @@
 package com.stopclimatechange.earthgarden.controller;
 
 import com.stopclimatechange.earthgarden.config.JwtTokenProvider;
-import com.stopclimatechange.earthgarden.domain.Post;
-import com.stopclimatechange.earthgarden.domain.PostDto;
-import com.stopclimatechange.earthgarden.domain.TreeDto;
-import com.stopclimatechange.earthgarden.domain.User;
+import com.stopclimatechange.earthgarden.domain.*;
 import com.stopclimatechange.earthgarden.service.PostService;
 import com.stopclimatechange.earthgarden.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +21,7 @@ public class PostController {
     private final JwtTokenProvider jwtTokenProvider;
     private final PostService postService;
 
-   @GetMapping(value = "/posts")
+    @GetMapping(value = "/posts")
     public ResponseEntity<HashMap> getPostsByMonth(@RequestHeader("X-AUTH-TOKEN") String token, @RequestParam("date") String date) {
 
         User user = userService.findUserByEmail(jwtTokenProvider.getUserEmail(token));
@@ -36,4 +33,18 @@ public class PostController {
         responseMap.put("data", posts);
         return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
     }
+
+    @GetMapping(value = "/posts/new/checklist")
+    public ResponseEntity<HashMap> getChecklist() {
+
+        List<CheckMent> checkMents = postService.chooseMents();
+
+        HashMap<String, Object> responseMap = new HashMap<>();
+        responseMap.put("status", 200);
+        responseMap.put("message", "체크리스트 조회 성공");
+        responseMap.put("data", checkMents);
+        return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+    }
+
+
 }

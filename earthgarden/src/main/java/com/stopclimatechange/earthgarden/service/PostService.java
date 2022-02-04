@@ -1,8 +1,10 @@
 package com.stopclimatechange.earthgarden.service;
 
+import com.stopclimatechange.earthgarden.domain.CheckMent;
 import com.stopclimatechange.earthgarden.domain.Post;
 import com.stopclimatechange.earthgarden.domain.PostDto;
 import com.stopclimatechange.earthgarden.domain.User;
+import com.stopclimatechange.earthgarden.util.CheckList;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +30,21 @@ public class PostService {
         return fitPosts;
     }
 
+    public List<CheckMent> chooseMents(){
+        List<CheckMent> checkMents = new ArrayList<>();
+        for(int i = 0 ; i < 6; i++){
+            Integer num = Integer.valueOf(((int)(Math.random() * 100) % 30) +1);
+            String ment = CheckList.checkList.get(i*6+num);
+            CheckMent checkMent = new CheckMent(i*6+num, ment);
+            checkMents.add(checkMent);
+        }
+        return checkMents;
+    }
+
     private String[] handlingDate(String date){
         return  date.split("-");
 
     }
+
+
 }
