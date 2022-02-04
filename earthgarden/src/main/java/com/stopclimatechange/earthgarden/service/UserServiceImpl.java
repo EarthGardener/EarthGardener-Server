@@ -23,7 +23,8 @@ public class UserServiceImpl implements UserService{
     public User signUp(UserDto userDto, MultipartFile image) {
         userDto.setRoles(Collections.singletonList("ROLE_USER"));
         userDto.setPw(passwordEncoder.encode(userDto.getPw()));           // 비밀번호 암호화
-        userDto.setImage_url(imageUploadService.restore(image));
+        if(!image.isEmpty())
+            userDto.setImage_url(imageUploadService.restore(image));
         return userRepository.save(new User(userDto));
     }
 
