@@ -21,6 +21,8 @@ public class TreeController {
     private final JwtTokenProvider jwtTokenProvider;
     private final TreeService treeService;
 
+
+
     @PostMapping(value = "/tree/name")
     public ResponseEntity<HashMap> giveNameToTree(@RequestHeader("X-AUTH-TOKEN") String token, @RequestBody TreeDto.NameDto nameDto) {
 
@@ -41,8 +43,10 @@ public class TreeController {
 
         HashMap<String, Object> responseMap = new HashMap<>();
         responseMap.put("status", 200);
-        responseMap.put("data", treeDto);
         responseMap.put("message", "나무 정보 불러오기 성공");
+        responseMap.put("levelup", treeService.isTreeLevelUp());
+        responseMap.put("user_nickname", user.getNickname());
+        responseMap.put("data", treeDto);
         return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
     }
 }

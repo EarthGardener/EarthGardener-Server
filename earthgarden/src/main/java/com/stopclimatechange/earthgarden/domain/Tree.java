@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stopclimatechange.earthgarden.util.RandomGenerator;
 import com.sun.istack.NotNull;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -42,7 +43,11 @@ public class Tree extends Timestamped{
         month_sum = 0;
     }
 
-    public void updateTreeName(String name){
-        this.name = name;
+    public void updateByTreeDto(TreeDto treeDto){
+        name = treeDto.getName();
+        level = treeDto.getLevel();
+        exp = treeDto.getExp();
+        total_sum = treeDto.getTotal_sum();
+        month_sum = treeDto.getMonth_sum();
     }
 }
