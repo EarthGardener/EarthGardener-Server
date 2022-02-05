@@ -1,6 +1,4 @@
-# EarthGardener-Server
-
-# 🌳EarthGardener-Android🌳
+# 🌳EarthGardener-Server🌳
 - Team: 기후변화 멈춰조
 - Member: 이재성, 심채영, 김예진, 유정현
 
