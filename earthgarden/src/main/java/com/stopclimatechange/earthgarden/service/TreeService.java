@@ -41,7 +41,14 @@ public class TreeService {
     public TreeDto reflectLevel(User user){
         Tree tree = user.getTree();
         TreeDto treeDto = new TreeDto(tree);
-        treeDto.setLevel(tree.getLevel() + 1);
+        if(tree.getLevel() + 1 == 6){
+            treeDto.setMonth_sum(treeDto.getMonth_sum()+1);
+            treeDto.setTotal_sum(treeDto.getTotal_sum()+1);
+            treeDto.setLevel(1);
+        }
+        else {
+            treeDto.setLevel(tree.getLevel() + 1);
+        }
         treeDto.setExp(tree.getExp()- (tree.getLevel()+1)*500);
         tree.updateByTreeDto(treeDto);
         treeRepository.save(tree);
