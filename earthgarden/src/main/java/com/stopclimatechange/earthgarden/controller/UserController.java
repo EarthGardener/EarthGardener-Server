@@ -120,4 +120,36 @@ public class UserController {
         responseMap.put("data", profileDto);
         return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
     }
+
+    @PutMapping(value = "/user/profile", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<HashMap> updateProfile(@RequestHeader("X-AUTH-TOKEN") String token,
+                                                 @RequestPart(value="nickname") String nickname,
+                                                 @RequestPart(value = "image", required = false) MultipartFile image) {
+
+        User user = userService.findUserByEmail(jwtTokenProvider.getUserEmail(token));
+        userService.updateProfile(user, nickname, image);
+
+        HashMap<String, Object> responseMap = new HashMap<>();
+
+        responseMap.put("status", 200);
+        responseMap.put("message", "프로필 업데이트 성공");
+
+        return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/user/password")
+    public ResponseEntity<HashMap> updatePassword(@RequestHeader("X-AUTH-TOKEN") String token,
+                                                 @RequestPart(value="pw") String pw) {
+
+        User user = userService.findUserByEmail(jwtTokenProvider.getUserEmail(token));
+        userService.updatePassword(user, pw);
+
+        HashMap<String, Object> responseMap = new HashMap<>();
+
+        responseMap.put("status", 200);
+        responseMap.put("message", "비밀번호 변경 성공");
+
+        return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+    }
+
 }

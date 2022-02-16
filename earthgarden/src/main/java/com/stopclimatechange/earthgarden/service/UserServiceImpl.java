@@ -44,6 +44,19 @@ public class UserServiceImpl implements UserService{
         return user;
     }
 
+    public void updateProfile(User user, String nickname, MultipartFile image){
+        if(!image.isEmpty())
+            user.updateProfile(nickname, imageUploadService.restore(image));
+        else
+            user.updateProfile(nickname, null);
+        userRepository.save(user);
+    }
+
+    public void updatePassword(User user, String pw){
+        user.updatePw(passwordEncoder.encode(pw));
+        userRepository.save(user);
+    }
+
     @Override
     public Boolean validateDuplicateEmail(String email){
         return userRepository.existsByEmail(email);
@@ -63,4 +76,5 @@ public class UserServiceImpl implements UserService{
     public void saveUpdatedUser(User user){
         userRepository.save(user);
     }
+
 }

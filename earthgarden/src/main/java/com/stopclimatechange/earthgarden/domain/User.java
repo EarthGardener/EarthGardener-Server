@@ -66,6 +66,14 @@ public class User extends Timestamped implements UserDetails {
         this.tree = tree;
     }
 
+    public void updateProfile(String nickname, String image_url){
+        this.nickname = nickname;
+        this.image_url = image_url;
+    }
+    public void updatePw(String pw){
+        this.pw = pw;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

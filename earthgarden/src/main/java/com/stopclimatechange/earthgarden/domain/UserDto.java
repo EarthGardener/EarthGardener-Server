@@ -53,5 +53,4 @@ public class UserDto {
             image_url= user.getImage_url();
         }
     }
-
 }

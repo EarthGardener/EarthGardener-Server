@@ -20,6 +20,9 @@ public interface UserService {
 
     public User findUserByEmail(String email);
 
-    public void saveUpdatedUser(User user);
+    public void updateProfile(User user, String nickname, MultipartFile image);
 
+    public void updatePassword(User user, String pw);
+
+    public void saveUpdatedUser(User user);
 }
