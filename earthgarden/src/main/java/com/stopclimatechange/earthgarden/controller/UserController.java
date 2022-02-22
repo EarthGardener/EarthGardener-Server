@@ -1,7 +1,6 @@
 package com.stopclimatechange.earthgarden.controller;
 
 import com.stopclimatechange.earthgarden.config.JwtTokenProvider;
-import com.stopclimatechange.earthgarden.domain.TreeDto;
 import com.stopclimatechange.earthgarden.domain.User;
 import com.stopclimatechange.earthgarden.domain.UserDto;
 import com.stopclimatechange.earthgarden.service.MailService;
@@ -64,8 +63,6 @@ public class UserController {
             responseMap.put("message", "사용 가능한 닉네임");
             return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
         }
-
-
     }
 
     @PostMapping(value = "/user/signup",
