@@ -39,6 +39,23 @@ public class ImageUploadService {
         return url;
     }
 
+    public Boolean deleteImage(String image_url){
+
+        if(image_url != null) {
+            File file = new File(image_url);
+
+            if (file.exists()) {
+                if (file.delete()) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }//##에러 처리 보완 필요
+
 
     // 현재 시간을 기준으로 랜덤 파일 이름 생성
     private String genSaveFileName(String extName) {
@@ -47,7 +64,7 @@ public class ImageUploadService {
 
         Calendar calendar = Calendar.getInstance();
         fileName += calendar.get(Calendar.YEAR);
-        fileName += setNameLength(calendar.get(Calendar.MONTH));
+        fileName += setNameLength(calendar.get(Calendar.MONTH) +1);
 
         //파일 정리용 폴더 생성
         dir += fileName;

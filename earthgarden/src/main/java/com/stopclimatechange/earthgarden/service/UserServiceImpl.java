@@ -45,10 +45,13 @@ public class UserServiceImpl implements UserService{
     }
 
     public void updateProfile(User user, String nickname, MultipartFile image){
+        imageUploadService.deleteImage(user.getImage_url());
+
         if(!image.isEmpty())
             user.updateProfile(nickname, imageUploadService.restore(image));
         else
             user.updateProfile(nickname, null);
+
         userRepository.save(user);
     }
 
