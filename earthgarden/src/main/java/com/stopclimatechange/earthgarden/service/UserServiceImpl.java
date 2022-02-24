@@ -44,6 +44,7 @@ public class UserServiceImpl implements UserService{
         return user;
     }
 
+    @Override
     public void updateProfile(User user, String nickname, MultipartFile image){
         imageUploadService.deleteImage(user.getImage_url());
 
@@ -55,9 +56,17 @@ public class UserServiceImpl implements UserService{
         userRepository.save(user);
     }
 
+    @Override
     public void updatePassword(User user, String pw){
         user.updatePw(passwordEncoder.encode(pw));
         userRepository.save(user);
+    }
+
+    @Override
+    public Boolean checkRightPassword(User user, String ori_pw){
+        if(passwordEncoder.matches(ori_pw , user.getPw()))
+            return true;
+        else return false;
     }
 
     @Override

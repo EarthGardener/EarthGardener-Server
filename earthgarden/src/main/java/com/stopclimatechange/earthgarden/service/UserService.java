@@ -25,4 +25,6 @@ public interface UserService {
     public void updatePassword(User user, String pw);
 
     public void saveUpdatedUser(User user);
+
+    public Boolean checkRightPassword(User user, String ori_pw);
 }
