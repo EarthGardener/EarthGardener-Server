@@ -27,6 +27,7 @@ public class UserController {
     @GetMapping(value = "/user/signup/email")
     public ResponseEntity<HashMap> checkValidEmail(@RequestParam String email){
 
+        email = email.trim();
         Boolean isExist = userService.validateDuplicateEmail(email);
 
         HashMap<String, Object> responseMap = new HashMap<>();
@@ -72,6 +73,8 @@ public class UserController {
                                           @RequestPart(value = "nickname") String nickname,
                                           @RequestPart(value = "image", required = false) MultipartFile image) {
 
+        email = email.trim();
+
         HashMap<String, Object> responseMap = new HashMap<>();
         if(userService.validateDuplicateEmail(email)){
             responseMap.put("status", 409);
@@ -90,6 +93,8 @@ public class UserController {
 
     @PostMapping("/user/signin")
     public ResponseEntity<HashMap> login(@RequestBody UserDto.LoginDto loginDto) {
+
+        loginDto.setEmail(loginDto.getEmail().trim());
 
         User user = userService.signIn(loginDto);
         HashMap<String, Object> responseMap = new HashMap<>();
