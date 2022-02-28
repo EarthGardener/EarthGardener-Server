@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<HashMap> handleExpiredJwtException(ExpiredJwtException exception) {
         HashMap<String, Object> responseMap = new HashMap<>();
 
-        responseMap.put("status", 409);
+        responseMap.put("status", 401);
         responseMap.put("message", "만료된 토큰");
         return new ResponseEntity<HashMap>(responseMap, HttpStatus.CONFLICT);
     }
