@@ -50,11 +50,12 @@ public class PostService {
     }
 
     public void posting(User user, String title,
-                        Integer checklist_1, Integer checklist_2, Integer checklist_3,
+                        String checklist_1, String checklist_2, String checklist_3,
                         MultipartFile image_1, MultipartFile image_2, MultipartFile image_3) {
-        Integer[] checklist = new Integer[] {
-                checklist_1, checklist_2,checklist_3
-        };
+
+
+
+        Integer[] checklist = changeChecklistIdToString(checklist_1, checklist_2, checklist_3);
         MultipartFile[] images = new MultipartFile[]{
                 image_1,image_2,image_3
         };
@@ -62,8 +63,8 @@ public class PostService {
         treeService.updateExp(user, exp);
 
         List<Post> posts = user.getPosts();
-        PostDto postDto = new PostDto(title, exp, checklist_1, checklist_2, checklist_3);
-        Post post = new Post(postDto, checklist_1, checklist_2,checklist_3, user);
+        PostDto postDto = new PostDto(title, exp, checklist);
+        Post post = new Post(postDto, checklist, user);
         posts.add(post);
         postRepository.save(post);
         savePostImages(post, images);
@@ -96,6 +97,32 @@ public class PostService {
                 postImages.add(postImage);
             }
         }
+    }
+
+    private Integer[] changeChecklistIdToString(String checkList_1, String checkList_2, String checkList_3){
+        Integer checklist_int_1;
+        Integer checklist_int_2;
+        Integer checklist_int_3;
+
+        if(checkList_1.length() != 0)
+            checklist_int_1=Integer.parseInt(checkList_1);
+        else
+            checklist_int_1= 0;
+
+        if(checkList_2.length() != 0)
+            checklist_int_2=Integer.parseInt(checkList_2);
+        else
+            checklist_int_2= 0;
+
+        if(checkList_3.length() != 0)
+            checklist_int_3=Integer.parseInt(checkList_3);
+        else
+            checklist_int_3= 0;
+
+        Integer[] checklist_Int = new Integer[]{
+                checklist_int_1, checklist_int_2, checklist_int_3
+        };
+        return checklist_Int;
     }
 
 }

@@ -50,29 +50,12 @@ public class PostController {
     @PostMapping(value = "/posts/new")
     public ResponseEntity<HashMap> posting(@RequestHeader("X-AUTH-TOKEN") String token,
                                            @RequestParam("title") String title,
-                                           @RequestParam(value = "checklist_1", required = false) String cl_1,
-                                           @RequestParam(value = "checklist_2", required = false) String cl_2,
-                                           @RequestParam(value = "checklist_3", required = false) String cl_3,
+                                           @RequestParam(value = "checklist_1", required = false) String checklist_1,
+                                           @RequestParam(value = "checklist_2", required = false) String checklist_2,
+                                           @RequestParam(value = "checklist_3", required = false) String checklist_3,
                                            @RequestPart(value = "image_1", required = false) MultipartFile image_1,
                                            @RequestPart(value = "image_2", required = false) MultipartFile image_2,
                                            @RequestPart(value = "image_3", required = false) MultipartFile image_3) {
-        Integer checklist_1;
-        Integer checklist_2;
-        Integer checklist_3;
-        if(cl_1.length() != 0)
-            checklist_1=Integer.parseInt(cl_1);
-        else
-            checklist_1= 0;
-
-        if(cl_2.length() != 0)
-            checklist_2=Integer.parseInt(cl_2);
-        else
-            checklist_2= 0;
-
-        if(cl_3.length() != 0)
-            checklist_3=Integer.parseInt(cl_3);
-        else
-            checklist_3= 0;
 
         User user = userService.findUserByEmail(jwtTokenProvider.getUserEmail(token));
 

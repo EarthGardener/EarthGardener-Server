@@ -43,12 +43,12 @@ public class Post extends Timestamped{
     @OneToMany(mappedBy="post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PostImage> postImages = new ArrayList<>();
 
-    public Post(PostDto postDto, Integer checklist_1, Integer checklist_2, Integer checklist_3, User user){
+    public Post(PostDto postDto, Integer[] checklist, User user){
         this.title = postDto.getTitle();
         this.exp = postDto.getExp();
-        this.checklist_3 = checklist_3;
-        this.checklist_2 = checklist_2;
-        this.checklist_1 = checklist_1;
+        this.checklist_1 = checklist[0];
+        this.checklist_2 = checklist[1];
+        this.checklist_3 = checklist[2];
         this.user = user;
     }
 
