@@ -141,21 +141,20 @@ public class UserController {
 
     @PutMapping(value = "/user/password")
     public ResponseEntity<HashMap> updatePassword(@RequestHeader("X-AUTH-TOKEN") String token,
-                                                 @RequestPart(value="ori_pw") String ori_pw,
-                                                 @RequestPart(value="new_pw") String new_pw) {
+                                                 @RequestBody UserDto.PasswordDto passwordDto) {
 
         User user = userService.findUserByEmail(jwtTokenProvider.getUserEmail(token));
 
         HashMap<String, Object> responseMap = new HashMap<>();
 
-        if(!userService.checkRightPassword(user, ori_pw)){
+        if(!userService.checkRightPassword(user, passwordDto.getOri_pw())){
             responseMap.put("status", 409);
             responseMap.put("message", "비밀번호 오류");
             
             return new ResponseEntity<HashMap>(responseMap, HttpStatus.UNAUTHORIZED);
         }
         else{
-            userService.updatePassword(user, new_pw);
+            userService.updatePassword(user, passwordDto.getNew_pw());
 
             responseMap.put("status", 200);
             responseMap.put("message", "비밀번호 변경 성공");

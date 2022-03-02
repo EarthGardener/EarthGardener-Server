@@ -53,4 +53,13 @@ public class UserDto {
             image_url= user.getImage_url();
         }
     }
+
+    @Getter
+    @Setter
+    public static class PasswordDto {
+        @NotNull
+        private String ori_pw;
+        @NotNull
+        private String new_pw;
+    }
 }
