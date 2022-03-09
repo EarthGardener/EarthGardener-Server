@@ -3,16 +3,13 @@ package com.stopclimatechange.earthgarden.service;
 import com.stopclimatechange.earthgarden.domain.*;
 import com.stopclimatechange.earthgarden.repository.PostRepository;
 import com.stopclimatechange.earthgarden.util.CheckList;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,19 +20,33 @@ public class PostService {
     private final ImageUploadService imageUploadService;
     private final PostRepository postRepository;
 
-    public List<PostDto> findFitPost(User user, String date){
+    public HashMap<Integer, PostDto> findFitPost(User user, String date){
+
         Integer year = Integer.parseInt(handlingDate(date)[0]);
         Integer month = Integer.parseInt(handlingDate(date)[1]);
-        List<Post> allPost = user.getPosts();
-        List<PostDto> fitPosts = new ArrayList<PostDto>();
+
+        LocalDateTime startDateTime = LocalDate.of(year, month, 1).atStartOfDay();
+        LocalDateTime endDateTime = startDateTime.plusMonths(1);
+
+        List<Post> allPost = postRepository.findAllByCreatedAtBetween(startDateTime, endDateTime);
+
+        HashMap<Integer, PostDto> fitPosts = new HashMap<Integer, PostDto>();
         for(Post post : allPost){
-            if(post.getCreatedAt().getYear() == year && post.getCreatedAt().getMonthValue() == month){
-                PostDto postDto = new PostDto(post);
-                fitPosts.add(postDto);
-            }
+            PostDto postDto = new PostDto(post);
+            Integer postedDate = post.getCreatedAt().getDayOfMonth();
+            fitPosts.put(postedDate, postDto);
         }
         //##정렬해야대?
         return fitPosts;
+    }
+
+    public Boolean checkTodayWrited(User user){
+        List<Post> allPost = postRepository.findAllByCreatedAtBetween(LocalDate.now().atStartOfDay(), LocalDateTime.now());
+        if(allPost.size() == 0){
+            return false;
+        }
+        else
+            return true;
     }
 
     public List<CheckMent> chooseMents(){
@@ -53,8 +64,6 @@ public class PostService {
                         String checklist_1, String checklist_2, String checklist_3,
                         MultipartFile image_1, MultipartFile image_2, MultipartFile image_3) {
 
-
-
         Integer[] checklist = changeChecklistIdToString(checklist_1, checklist_2, checklist_3);
         MultipartFile[] images = new MultipartFile[]{
                 image_1,image_2,image_3
@@ -69,8 +78,6 @@ public class PostService {
         postRepository.save(post);
         savePostImages(post, images);
         userService.saveUpdatedUser(user);
-
-
     }
 
     private String[] handlingDate(String date){

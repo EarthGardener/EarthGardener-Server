@@ -26,7 +26,7 @@ public class PostController {
     public ResponseEntity<HashMap> getPostsByMonth(@RequestHeader("X-AUTH-TOKEN") String token, @RequestParam("date") String date) {
 
         User user = userService.findUserByEmail(jwtTokenProvider.getUserEmail(token));
-        List<PostDto> posts = postService.findFitPost(user, date);
+        HashMap<Integer, PostDto> posts = postService.findFitPost(user, date);
 
         HashMap<String, Object> responseMap = new HashMap<>();
         responseMap.put("status", 200);
@@ -36,15 +36,30 @@ public class PostController {
     }
 
     @GetMapping(value = "/posts/new/checklist")
-    public ResponseEntity<HashMap> getChecklist() {
+    public ResponseEntity<HashMap> getChecklist(@RequestHeader("X-AUTH-TOKEN") String token) {
 
-        List<CheckMent> checkMents = postService.chooseMents();
+        User user = userService.findUserByEmail(jwtTokenProvider.getUserEmail(token));
+
+        Boolean isWrited = postService.checkTodayWrited(user);
 
         HashMap<String, Object> responseMap = new HashMap<>();
-        responseMap.put("status", 200);
-        responseMap.put("message", "체크리스트 조회 성공");
-        responseMap.put("data", checkMents);
-        return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+
+        if(isWrited){
+            responseMap.put("status", 200);
+            responseMap.put("message", "오늘 작성된 글 존재");
+            responseMap.put("data", null);
+            responseMap.put("isWrited", isWrited);
+            return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+        }
+        else {
+            List<CheckMent> checkMents = postService.chooseMents();
+
+            responseMap.put("status", 200);
+            responseMap.put("message", "체크리스트 조회 성공");
+            responseMap.put("data", checkMents);
+            responseMap.put("isWrited", isWrited);
+            return new ResponseEntity<HashMap>(responseMap, HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @PostMapping(value = "/posts/new")
