@@ -45,7 +45,7 @@ public class PostController {
         HashMap<String, Object> responseMap = new HashMap<>();
 
         if(isWrited){
-            responseMap.put("status", 200);
+            responseMap.put("status", 409);
             responseMap.put("message", "오늘 작성된 글 존재");
             responseMap.put("data", null);
             responseMap.put("isWrited", isWrited);
