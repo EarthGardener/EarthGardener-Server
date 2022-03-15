@@ -49,7 +49,7 @@ public class PostController {
             responseMap.put("message", "오늘 작성된 글 존재");
             responseMap.put("data", null);
             responseMap.put("isWrited", isWrited);
-            return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+            return new ResponseEntity<HashMap>(responseMap, HttpStatus.CONFLICT);
         }
         else {
             List<CheckMent> checkMents = postService.chooseMents();
@@ -58,7 +58,7 @@ public class PostController {
             responseMap.put("message", "체크리스트 조회 성공");
             responseMap.put("data", checkMents);
             responseMap.put("isWrited", isWrited);
-            return new ResponseEntity<HashMap>(responseMap, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
         }
     }
 
