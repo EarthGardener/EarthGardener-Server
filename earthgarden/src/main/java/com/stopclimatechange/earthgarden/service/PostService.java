@@ -75,8 +75,8 @@ public class PostService {
         PostDto postDto = new PostDto(title, exp, checklist);
         Post post = new Post(postDto, checklist, user);
         posts.add(post);
-        postRepository.save(post);
         savePostImages(post, images);
+        postRepository.save(post);
         userService.saveUpdatedUser(user);
     }
 
