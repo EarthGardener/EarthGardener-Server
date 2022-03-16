@@ -79,7 +79,7 @@ public class PostController {
         HashMap<String, Object> responseMap = new HashMap<>();
         responseMap.put("status", 200);
         responseMap.put("message", "post 저장 성공");
-       return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+        return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
     }
 
 

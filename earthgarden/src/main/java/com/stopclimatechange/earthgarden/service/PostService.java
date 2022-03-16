@@ -3,6 +3,7 @@ package com.stopclimatechange.earthgarden.service;
 import com.stopclimatechange.earthgarden.domain.*;
 import com.stopclimatechange.earthgarden.repository.PostRepository;
 import com.stopclimatechange.earthgarden.util.CheckList;
+import com.stopclimatechange.earthgarden.util.errors.NotValidImageException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -98,11 +99,16 @@ public class PostService {
 
     private void savePostImages(Post post, MultipartFile[] images){
         List<PostImage> postImages = post.getPostImages();
-        for(MultipartFile image : images){
-            if(!image.isEmpty()){
-                PostImage postImage = new PostImage(imageUploadService.restore(image),post);
-                postImages.add(postImage);
+        try {
+            for (MultipartFile image : images) {
+                if (!image.isEmpty()) {
+                    PostImage postImage = new PostImage(imageUploadService.restore(image), post);
+                    postImages.add(postImage);
+                }
             }
+        }
+        catch (Exception e){
+            throw new NotValidImageException();
         }
     }
 

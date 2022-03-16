@@ -26,6 +26,6 @@ public class GlobalExceptionHandler {
 
         responseMap.put("status", 401);
         responseMap.put("message", "만료된 토큰");
-        return new ResponseEntity<HashMap>(responseMap, HttpStatus.CONFLICT);
+        return new ResponseEntity<HashMap>(responseMap, HttpStatus.UNAUTHORIZED);
     }
 }
