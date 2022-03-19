@@ -1,11 +1,14 @@
 package com.stopclimatechange.earthgarden.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.stopclimatechange.earthgarden.util.CheckList;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.util.Pair;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,29 +41,33 @@ public class PostDto {
 
     public static class PostInfoDto{
 
-        public String id;
-        public String title;
-        public Integer date;
-        public Integer exp;
-        public Integer checklist_1;
-        public Integer checklist_2;
-        public Integer checklist_3;
+        @JsonProperty
+        private String id;
+        @JsonProperty
+        private String title;
+        @JsonProperty
+        private Integer date;
+        @JsonProperty
+        private Integer exp;
+        @JsonProperty
+        private List<Pair<Integer, String>> checklist;
 
         public PostInfoDto(Post post){
             id = post.getId();
             title = post.getTitle();
-            checklist_1 = post.getChecklist_1();
-            checklist_2 = post.getChecklist_2();
-            checklist_3 = post.getChecklist_3();
+            checklist = new ArrayList<>();
         }
 
         public void setDate(Integer date) {
             this.date = date;
         }
 
-
         public void setExp(Integer exp) {
             this.exp = exp;
+        }
+
+        public void addCheckList(Integer exp, String ment){
+            checklist.add(Pair.of(exp, ment));
         }
     }
 }

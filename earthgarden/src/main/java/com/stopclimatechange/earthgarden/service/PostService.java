@@ -36,6 +36,7 @@ public class PostService {
             PostDto.PostInfoDto postInfoDto = new PostDto.PostInfoDto(post);
             postInfoDto.setDate(post.getCreatedAt().getDayOfMonth());
             postInfoDto.setExp(post.getExp());
+            makeCheckListOfPost(post, postInfoDto);
             fitPosts.add(postInfoDto);
         }
         //##정렬해야대?
@@ -93,6 +94,24 @@ public class PostService {
             imageURL.add(postImages.get(i).getImage_url());
         }
         return imageURL;
+    }
+
+    private void makeCheckListOfPost(Post post, PostDto.PostInfoDto postInfoDto){
+        if(post.getChecklist_1()!=0){
+            Integer checkId = post.getChecklist_1();
+            postInfoDto.addCheckList(100 + (30 - checkId)/6 * 50, CheckList.checkList.get(checkId));
+        }
+        else return;
+        if(post.getChecklist_2()!=0){
+            Integer checkId = post.getChecklist_2();
+            postInfoDto.addCheckList(100 + (30 - checkId)/6 * 50, CheckList.checkList.get(checkId));
+        }
+        else return;
+        if(post.getChecklist_3()!=0){
+            Integer checkId = post.getChecklist_3();
+            postInfoDto.addCheckList(100 + (30 - checkId)/6 * 50, CheckList.checkList.get(checkId));
+        }
+        else return;
     }
 
     private String[] handlingDate(String date){
