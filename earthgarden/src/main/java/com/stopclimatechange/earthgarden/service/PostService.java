@@ -21,7 +21,7 @@ public class PostService {
     private final ImageUploadService imageUploadService;
     private final PostRepository postRepository;
 
-    public HashMap<Integer, PostDto> findFitPost(User user, String date){
+    public List<PostDto.PostInfoDto> findFitPost(User user, String date){
 
         Integer year = Integer.parseInt(handlingDate(date)[0]);
         Integer month = Integer.parseInt(handlingDate(date)[1]);
@@ -31,14 +31,19 @@ public class PostService {
 
         List<Post> allPost = postRepository.findAllByCreatedAtBetween(startDateTime, endDateTime);
 
-        HashMap<Integer, PostDto> fitPosts = new HashMap<Integer, PostDto>();
+        List<PostDto.PostInfoDto> fitPosts = new ArrayList<>();
         for(Post post : allPost){
-            PostDto postDto = new PostDto(post);
-            Integer postedDate = post.getCreatedAt().getDayOfMonth();
-            fitPosts.put(postedDate, postDto);
+            PostDto.PostInfoDto postInfoDto = new PostDto.PostInfoDto(post);
+            postInfoDto.setDate(post.getCreatedAt().getDayOfMonth());
+            postInfoDto.setExp(post.getExp());
+            fitPosts.add(postInfoDto);
         }
         //##정렬해야대?
         return fitPosts;
+    }
+
+    public Post getPostById(String id){
+        return postRepository.findById(id);
     }
 
     public Boolean checkTodayWrited(User user){
@@ -81,6 +86,15 @@ public class PostService {
         userService.saveUpdatedUser(user);
     }
 
+    public List<String> getPostImagesURL(Post post){
+        List<String> imageURL = new ArrayList<>();
+        List<PostImage> postImages = post.getPostImages();
+        for(int i = 0 ; i < postImages.size() ; i++){
+            imageURL.add(postImages.get(i).getImage_url());
+        }
+        return imageURL;
+    }
+
     private String[] handlingDate(String date){
         return  date.split("-");
     }
@@ -117,20 +131,26 @@ public class PostService {
         Integer checklist_int_2;
         Integer checklist_int_3;
 
-        if(checkList_1.length() != 0)
-            checklist_int_1=Integer.parseInt(checkList_1);
-        else
+        if(checkList_1 == null)
             checklist_int_1= 0;
-
-        if(checkList_2.length() != 0)
-            checklist_int_2=Integer.parseInt(checkList_2);
+        else if(checkList_1.length() == 0)
+            checklist_int_1= 0;
         else
+            checklist_int_1=Integer.parseInt(checkList_1);
+
+        if(checkList_2 == null)
             checklist_int_2= 0;
-
-        if(checkList_3.length() != 0)
-            checklist_int_3=Integer.parseInt(checkList_3);
+        else if(checkList_2.length() == 0)
+            checklist_int_2= 0;
         else
+            checklist_int_2=Integer.parseInt(checkList_1);
+
+        if(checkList_3 == null)
             checklist_int_3= 0;
+        else if(checkList_3.length() == 0)
+            checklist_int_3= 0;
+        else
+            checklist_int_3=Integer.parseInt(checkList_1);
 
         Integer[] checklist_Int = new Integer[]{
                 checklist_int_1, checklist_int_2, checklist_int_3

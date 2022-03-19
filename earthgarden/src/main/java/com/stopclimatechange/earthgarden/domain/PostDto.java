@@ -5,6 +5,7 @@ import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,5 +34,33 @@ public class PostDto {
         this.checklist.add(CheckList.checkList.get(checklist[0]));
         this.checklist.add(CheckList.checkList.get(checklist[1]));
         this.checklist.add(CheckList.checkList.get(checklist[2]));
+    }
+
+    public static class PostInfoDto{
+
+        public String id;
+        public String title;
+        public Integer date;
+        public Integer exp;
+        public Integer checklist_1;
+        public Integer checklist_2;
+        public Integer checklist_3;
+
+        public PostInfoDto(Post post){
+            id = post.getId();
+            title = post.getTitle();
+            checklist_1 = post.getChecklist_1();
+            checklist_2 = post.getChecklist_2();
+            checklist_3 = post.getChecklist_3();
+        }
+
+        public void setDate(Integer date) {
+            this.date = date;
+        }
+
+
+        public void setExp(Integer exp) {
+            this.exp = exp;
+        }
     }
 }
