@@ -26,7 +26,7 @@ public class PostController {
     public ResponseEntity<HashMap> getPostsByMonth(@RequestHeader("X-AUTH-TOKEN") String token, @RequestParam("date") String date) {
 
         User user = userService.findUserByEmail(jwtTokenProvider.getUserEmail(token));
-        HashMap<Integer, PostDto> posts = postService.findFitPost(user, date);
+        List<PostDto.PostInfoDto> posts = postService.findFitPost(user, date);
 
         HashMap<String, Object> responseMap = new HashMap<>();
         responseMap.put("status", 200);
@@ -44,14 +44,13 @@ public class PostController {
 
         HashMap<String, Object> responseMap = new HashMap<>();
 
-        if(isWrited){
+        if (isWrited) {
             responseMap.put("status", 409);
             responseMap.put("message", "오늘 작성된 글 존재");
             responseMap.put("data", null);
             responseMap.put("isWrited", isWrited);
             return new ResponseEntity<HashMap>(responseMap, HttpStatus.CONFLICT);
-        }
-        else {
+        } else {
             List<CheckMent> checkMents = postService.chooseMents();
 
             responseMap.put("status", 200);
@@ -64,10 +63,10 @@ public class PostController {
 
     @PostMapping(value = "/posts/new")
     public ResponseEntity<HashMap> posting(@RequestHeader("X-AUTH-TOKEN") String token,
-                                           @RequestParam("title") String title,
-                                           @RequestParam(value = "checklist_1", required = false) String checklist_1,
-                                           @RequestParam(value = "checklist_2", required = false) String checklist_2,
-                                           @RequestParam(value = "checklist_3", required = false) String checklist_3,
+                                           @RequestPart("title") String title,
+                                           @RequestPart(value = "checklist_1", required = false) String checklist_1,
+                                           @RequestPart(value = "checklist_2", required = false) String checklist_2,
+                                           @RequestPart(value = "checklist_3", required = false) String checklist_3,
                                            @RequestPart(value = "image_1", required = false) MultipartFile image_1,
                                            @RequestPart(value = "image_2", required = false) MultipartFile image_2,
                                            @RequestPart(value = "image_3", required = false) MultipartFile image_3) {
@@ -82,6 +81,23 @@ public class PostController {
         return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
     }
 
+    @GetMapping("/posts/detail")
+    public ResponseEntity<HashMap> posting(@RequestParam("id") String id) {
+
+        Post post = postService.getPostById(id);
+        HashMap<String, Object> responseMap = new HashMap<>();
+
+        responseMap.put("title", post.getTitle());
+        responseMap.put("id", post.getId());
+        responseMap.put("checklist_3", post.getChecklist_3());
+        responseMap.put("checklist_2", post.getChecklist_2());
+        responseMap.put("checklist_1", post.getChecklist_1());
+        responseMap.put("postImages", postService.getPostImagesURL(post));
+        responseMap.put("message", "post 불러오기 성공");
+        responseMap.put("status", 200);
+        return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+
+    }
 
 
 }
