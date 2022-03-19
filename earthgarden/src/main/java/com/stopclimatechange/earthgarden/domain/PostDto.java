@@ -39,6 +39,7 @@ public class PostDto {
         this.checklist.add(CheckList.checkList.get(checklist[2]));
     }
 
+    @Getter
     public static class PostInfoDto{
 
         @JsonProperty
