@@ -47,6 +47,8 @@ public class PostDto {
         @JsonProperty
         private String title;
         @JsonProperty
+        private String thumbnail;
+        @JsonProperty
         private Integer date;
         @JsonProperty
         private Integer exp;
@@ -57,6 +59,11 @@ public class PostDto {
             id = post.getId();
             title = post.getTitle();
             checklist = new ArrayList<>();
+            try {
+                thumbnail = post.getPostImages().get(0).getImage_url();
+            }catch(IndexOutOfBoundsException e){
+                thumbnail = null;
+            }
         }
 
         public void setDate(Integer date) {
