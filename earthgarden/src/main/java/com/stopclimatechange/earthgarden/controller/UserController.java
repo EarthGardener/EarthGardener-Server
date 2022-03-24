@@ -43,10 +43,10 @@ public class UserController {
             mailService.sendCheckEmail(email, code);
             responseMap.put("status", 200);
             responseMap.put("code", code);
-            responseMap.put("message", "사용 가능한 이메일, 코드 발급됨");
             return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
         }
     }
+            responseMap.put("message", "사용 가능한 이메일, 코드 발급됨");
 
     @GetMapping(value = "/user/signup/nickname")
     public ResponseEntity<HashMap> checkValidNickname(@RequestParam String nickname){
@@ -151,7 +151,7 @@ public class UserController {
             responseMap.put("status", 409);
             responseMap.put("message", "비밀번호 오류");
             
-            return new ResponseEntity<HashMap>(responseMap, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<HashMap>(responseMap, HttpStatus.CONFLICT);
         }
         else{
             userService.updatePassword(user, passwordDto.getNew_pw());
