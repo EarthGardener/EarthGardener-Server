@@ -43,10 +43,10 @@ public class UserController {
             mailService.sendCheckEmail(email, code);
             responseMap.put("status", 200);
             responseMap.put("code", code);
+            responseMap.put("message", "사용 가능한 이메일, 코드 발급됨");
             return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
         }
     }
-            responseMap.put("message", "사용 가능한 이메일, 코드 발급됨");
 
     @GetMapping(value = "/user/signup/nickname")
     public ResponseEntity<HashMap> checkValidNickname(@RequestParam String nickname){
