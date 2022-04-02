@@ -172,7 +172,7 @@ public class UserController {
             responseMap.put("status", 409);
             responseMap.put("message", "비밀번호 오류");
             
-            return new ResponseEntity<HashMap>(responseMap, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<HashMap>(responseMap, HttpStatus.CONFLICT);
         }
         else{
             userService.updatePassword(user, passwordDto.getNew_pw());
