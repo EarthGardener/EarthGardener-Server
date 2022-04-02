@@ -62,4 +62,13 @@ public class UserDto {
         @NotNull
         private String new_pw;
     }
+
+    @Getter
+    @Setter
+    public static class KakaoDto{
+        @NotNull
+        private String kakao_id;
+        private String nickname;
+        private String image_url;
+    }
 }
