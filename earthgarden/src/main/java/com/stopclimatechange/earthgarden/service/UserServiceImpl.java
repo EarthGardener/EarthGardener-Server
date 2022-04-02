@@ -33,6 +33,18 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public User signUp(UserDto.KakaoDto kakaoDto) {
+        UserDto userDto = new UserDto();
+        userDto.setRoles(Collections.singletonList("ROLE_USER"));
+        userDto.setEmail(null);
+        userDto.setNickname(kakaoDto.getNickname());
+        userDto.setPw(kakaoDto.getKakao_id().toString());
+        userDto.setImage_url(kakaoDto.getImage_url());
+        Tree tree = new Tree();
+        return userRepository.save(new User(userDto, tree));
+    }
+
+    @Override
     public User signIn(UserDto.LoginDto loginDto) {
         User user = findUserByEmail(loginDto.getEmail());             // 이메일로 user 검색
 
@@ -42,6 +54,16 @@ public class UserServiceImpl implements UserService{
             return null;
 
         return user;
+    }
+    @Override
+    public User signIn(String social_id) {
+        User user = userRepository.findByPw(social_id).orElseGet(()->null);
+        return user;
+    }
+
+
+    public Boolean checkIsMember(String social_id){
+        return userRepository.existsByPw(social_id);
     }
 
     @Override
