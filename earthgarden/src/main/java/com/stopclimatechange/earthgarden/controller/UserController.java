@@ -82,13 +82,34 @@ public class UserController {
             return new ResponseEntity<HashMap>(responseMap, HttpStatus.CONFLICT);
         }
         else {
-            User user = userService.signUp(email, pw, nickname, image);
+            userService.signUp(email, pw, nickname, image);
 
             responseMap.put("status", 200);
             responseMap.put("message", "회원가입 성공");
             return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
         }
+    }
 
+    @PostMapping("/user/signin/kakao")
+    public ResponseEntity<HashMap> kakaoLogin(@RequestBody UserDto.KakaoDto kakaoDto){
+
+        User user;
+        if(userService.checkIsMember(kakaoDto.getKakao_id()))
+            user = userService.signIn(kakaoDto.getKakao_id());
+        else
+            user = userService.signUp(kakaoDto);
+        HashMap<String, Object> responseMap = new HashMap<>();
+        if (user != null) {
+            responseMap.put("status", 200);
+            responseMap.put("message", "로그인 성공");
+            responseMap.put("token", jwtTokenProvider.createToken(user.getEmail(), user.getRoles()));
+            return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+        }
+        else {
+            responseMap.put("status", 401);
+            responseMap.put("message", "소셜 로그인 오류");
+            return new ResponseEntity<HashMap>(responseMap, HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @PostMapping("/user/signin")
