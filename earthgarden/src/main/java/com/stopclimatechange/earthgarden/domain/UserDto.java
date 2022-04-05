@@ -66,6 +66,7 @@ public class UserDto {
     @Getter
     @Setter
     public static class KakaoDto{
+
         @NotNull
         private String kakao_id;
         private String nickname;

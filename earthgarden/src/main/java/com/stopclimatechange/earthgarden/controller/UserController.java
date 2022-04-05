@@ -94,11 +94,15 @@ public class UserController {
     public ResponseEntity<HashMap> kakaoLogin(@RequestBody UserDto.KakaoDto kakaoDto){
 
         User user;
-        if(userService.checkIsMember(kakaoDto.getKakao_id()))
-            user = userService.signIn(kakaoDto.getKakao_id());
-        else
-            user = userService.signUp(kakaoDto);
         HashMap<String, Object> responseMap = new HashMap<>();
+        if(userService.checkIsMember(kakaoDto.getKakao_id())) {
+            user = userService.signIn(kakaoDto.getKakao_id());
+            responseMap.put("type", "카카오 로그인");
+        }
+        else {
+            user = userService.signUp(kakaoDto);
+            responseMap.put("type", "카카오 회원가입");
+        }
         if (user != null) {
             responseMap.put("status", 200);
             responseMap.put("message", "로그인 성공");
