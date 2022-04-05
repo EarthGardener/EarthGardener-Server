@@ -39,7 +39,10 @@ public class UserServiceImpl implements UserService{
         userDto.setEmail(null);
         userDto.setNickname(kakaoDto.getNickname());
         userDto.setPw(kakaoDto.getKakao_id().toString());
-        userDto.setImage_url(kakaoDto.getImage_url());
+        if(kakaoDto.getImage_url().length()==0)
+            userDto.setImage_url(null);
+        else
+            userDto.setImage_url(kakaoDto.getImage_url());
         Tree tree = new Tree();
         return userRepository.save(new User(userDto, tree));
     }
@@ -55,6 +58,7 @@ public class UserServiceImpl implements UserService{
 
         return user;
     }
+
     @Override
     public User signIn(String social_id) {
         User user = userRepository.findByPw(social_id).orElseGet(()->null);
