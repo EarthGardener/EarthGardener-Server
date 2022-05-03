@@ -100,22 +100,33 @@ public class PostService {
         return imageURL;
     }
 
+    public List<CheckMent.CheckMentAndExp> checkMentAndExpByChecklistId(Integer id_1, Integer id_2, Integer id_3){
+        List<CheckMent.CheckMentAndExp> checkMentAndExpsList = new ArrayList<>();
+        if(id_1 != 0) {
+            checkMentAndExpsList.add(new CheckMent.CheckMentAndExp(calculateChecklistExpByID(id_1), CheckList.checkList.get(id_1)));
+        }
+        else{
+            checkMentAndExpsList.add(new CheckMent.CheckMentAndExp(null,null));
+        }
+
+        if(id_2 != 0) {
+            checkMentAndExpsList.add(new CheckMent.CheckMentAndExp(calculateChecklistExpByID(id_2), CheckList.checkList.get(id_2)));
+        }
+        else{
+            checkMentAndExpsList.add(new CheckMent.CheckMentAndExp(null,null));
+        }
+
+        if(id_3 != 0) {
+            checkMentAndExpsList.add(new CheckMent.CheckMentAndExp(calculateChecklistExpByID(id_3), CheckList.checkList.get(id_3)));
+        }
+        else{
+            checkMentAndExpsList.add(new CheckMent.CheckMentAndExp(null,null));
+        }
+        return checkMentAndExpsList;
+    }
+
     private void makeCheckListOfPost(Post post, PostDto.PostInfoDto postInfoDto){
-        if(post.getChecklist_1()!=0){
-            Integer checkId = post.getChecklist_1();
-            postInfoDto.addCheckList(calculateChecklistExpByID(checkId), CheckList.checkList.get(checkId));
-        }
-        else return;
-        if(post.getChecklist_2()!=0){
-            Integer checkId = post.getChecklist_2();
-            postInfoDto.addCheckList(calculateChecklistExpByID(checkId), CheckList.checkList.get(checkId));
-        }
-        else return;
-        if(post.getChecklist_3()!=0){
-            Integer checkId = post.getChecklist_3();
-            postInfoDto.addCheckList(calculateChecklistExpByID(checkId), CheckList.checkList.get(checkId));
-        }
-        else return;
+        postInfoDto.setChecklist(checkMentAndExpByChecklistId(post.getChecklist_1(), post.getChecklist_2(), post.getChecklist_3()));
     }
 
     private String[] handlingDate(String date){

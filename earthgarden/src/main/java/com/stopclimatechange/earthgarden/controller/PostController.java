@@ -88,10 +88,7 @@ public class PostController {
         HashMap<String, Object> responseMap = new HashMap<>();
 
         responseMap.put("title", post.getTitle());
-        responseMap.put("id", post.getId());
-        responseMap.put("checklist_3", post.getChecklist_3());
-        responseMap.put("checklist_2", post.getChecklist_2());
-        responseMap.put("checklist_1", post.getChecklist_1());
+        responseMap.put("checklist", postService.checkMentAndExpByChecklistId(post.getChecklist_1(), post.getChecklist_2(), post.getChecklist_3()));
         responseMap.put("postImages", postService.getPostImagesURL(post));
         responseMap.put("message", "post 불러오기 성공");
         responseMap.put("status", 200);
