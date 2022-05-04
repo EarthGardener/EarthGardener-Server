@@ -35,30 +35,38 @@ public class PostController {
         return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/posts/new/checklist")
-    public ResponseEntity<HashMap> getChecklist(@RequestHeader("X-AUTH-TOKEN") String token) {
+    @GetMapping(value = "/posts/new/iswrited")
+    public ResponseEntity<HashMap> isWrited(@RequestHeader("X-AUTH-TOKEN") String token) {
 
         User user = userService.findUserByEmail(jwtTokenProvider.getUserEmail(token));
 
         Boolean isWrited = postService.checkTodayWrited(user);
 
         HashMap<String, Object> responseMap = new HashMap<>();
-
         if (isWrited) {
-            responseMap.put("status", 409);
             responseMap.put("message", "오늘 작성된 글 존재");
-            responseMap.put("data", null);
-            responseMap.put("isWrited", isWrited);
-            return new ResponseEntity<HashMap>(responseMap, HttpStatus.CONFLICT);
-        } else {
-            List<CheckMent> checkMents = postService.chooseMents();
-
-            responseMap.put("status", 200);
-            responseMap.put("message", "체크리스트 조회 성공");
-            responseMap.put("data", checkMents);
-            responseMap.put("isWrited", isWrited);
-            return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
         }
+        else{
+            responseMap.put("message", "작성 가능");
+        }
+        responseMap.put("status", 200);
+        responseMap.put("data", isWrited);
+        return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/posts/new/checklist")
+    public ResponseEntity<HashMap> getChecklist() {
+
+
+        HashMap<String, Object> responseMap = new HashMap<>();
+
+
+        List<CheckMent> checkMents = postService.chooseMents();
+
+        responseMap.put("status", 200);
+        responseMap.put("message", "체크리스트 조회 성공");
+        responseMap.put("data", checkMents);
+        return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
     }
 
     @PostMapping(value = "/posts/new")
