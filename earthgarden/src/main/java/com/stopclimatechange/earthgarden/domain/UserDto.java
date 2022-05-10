@@ -71,5 +71,6 @@ public class UserDto {
         private String kakao_id;
         private String nickname;
         private String image_url;
+        private String email;
     }
 }

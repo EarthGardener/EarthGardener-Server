@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService{
     public User signUp(UserDto.KakaoDto kakaoDto) {
         UserDto userDto = new UserDto();
         userDto.setRoles(Collections.singletonList("ROLE_USER"));
-        userDto.setEmail(null);
+        userDto.setEmail(kakaoDto.getEmail());
         userDto.setNickname(kakaoDto.getNickname());
         userDto.setPw(kakaoDto.getKakao_id().toString());
         if(kakaoDto.getImage_url().length()==0)
