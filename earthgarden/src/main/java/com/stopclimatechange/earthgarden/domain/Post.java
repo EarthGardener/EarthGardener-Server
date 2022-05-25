@@ -9,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,10 +28,10 @@ public class Post extends Timestamped{
     @JoinColumn(name ="user_id")
     private User user;
 
-    @NotNull
+    @NotEmpty
     private String title;
 
-    @NotNull
+    @NotEmpty
     private Integer exp;
 
     private Integer checklist_1;
@@ -39,7 +40,7 @@ public class Post extends Timestamped{
 
     private Integer checklist_3;
 
-    @NotNull
+    @NotEmpty
     @OneToMany(mappedBy="post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PostImage> postImages = new ArrayList<>();
 

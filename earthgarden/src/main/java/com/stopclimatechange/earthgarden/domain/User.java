@@ -15,6 +15,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "user")
@@ -30,17 +31,18 @@ public class User extends Timestamped implements UserDetails {
     @GenericGenerator(name = RandomGenerator.generatorName, strategy = "com.stopclimatechange.earthgarden.util.RandomGenerator")
     private String id;
 
-    @NotNull
+    @Column(name = "social_id")
+    private String socialId;
+
+    @NotEmpty
     private String email;
 
     @JsonIgnore
-    @NotNull
     private String pw;
 
-    @NotNull
+    @NotEmpty
     private String nickname;
 
-    @Column(nullable = true)
     private String image_url;
 
     @NotNull
@@ -48,7 +50,6 @@ public class User extends Timestamped implements UserDetails {
     @JoinColumn(name="tree_id")
     private Tree tree;
 
-    @NotNull
     @OneToMany(mappedBy="user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<Post>();
 
@@ -58,6 +59,7 @@ public class User extends Timestamped implements UserDetails {
 
 
     public User(UserDto requestDto, Tree tree) {
+        this.socialId = requestDto.getSocialId();
         this.email = requestDto.getEmail();
         this.pw = requestDto.getPw();
         this.nickname = requestDto.getNickname();

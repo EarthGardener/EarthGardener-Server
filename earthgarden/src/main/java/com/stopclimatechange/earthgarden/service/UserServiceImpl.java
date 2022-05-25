@@ -23,6 +23,7 @@ public class UserServiceImpl implements UserService{
     public User signUp(String email, String pw, String nickname, MultipartFile image) {
         UserDto userDto = new UserDto();
         userDto.setRoles(Collections.singletonList("ROLE_USER"));
+        userDto.setSocialId("local");
         userDto.setEmail(email);
         userDto.setNickname(nickname);
         userDto.setPw(passwordEncoder.encode(pw));           // 비밀번호 암호화
@@ -36,10 +37,13 @@ public class UserServiceImpl implements UserService{
     public User signUp(UserDto.KakaoDto kakaoDto) {
         UserDto userDto = new UserDto();
         userDto.setRoles(Collections.singletonList("ROLE_USER"));
+        System.out.println(kakaoDto.getKakao_id());
+        userDto.setSocialId("kakao/" + kakaoDto.getKakao_id().toString());
         userDto.setEmail(kakaoDto.getEmail());
         userDto.setNickname(kakaoDto.getNickname());
-        userDto.setPw(kakaoDto.getKakao_id().toString());
-        if(kakaoDto.getImage_url().length()==0)
+        if(kakaoDto.getImage_url() == null)
+            userDto.setImage_url(null);
+        else if(kakaoDto.getImage_url().length()==0)
             userDto.setImage_url(null);
         else
             userDto.setImage_url(kakaoDto.getImage_url());
@@ -60,14 +64,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User signIn(String social_id) {
-        User user = userRepository.findByPw(social_id).orElseGet(()->null);
+    public User signIn(String socialId) {
+        socialId = "kakao/" + socialId;
+        User user = userRepository.findByPw(socialId).orElseGet(()->null);
         return user;
     }
 
 
-    public Boolean checkIsMember(String social_id){
-        return userRepository.existsByPw(social_id);
+    public Boolean checkIsMember(String socialId){
+        return userRepository.existsBySocialId("kakao/" + socialId);
     }
 
     @Override

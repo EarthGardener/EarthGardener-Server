@@ -90,30 +90,33 @@ public class UserController {
         }
     }
 
+
+    @PostMapping("/user/signup/kakao")
+    public ResponseEntity<HashMap> kakaoJoin(@RequestBody UserDto.KakaoDto kakaoDto) {
+        HashMap<String, Object> responseMap = new HashMap<>();
+        userService.signUp(kakaoDto);
+        responseMap.put("status", 200);
+        responseMap.put("message", "회원가입 성공");
+        return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+    }
+
     @PostMapping("/user/signin/kakao")
     public ResponseEntity<HashMap> kakaoLogin(@RequestBody UserDto.KakaoDto kakaoDto){
 
-        User user;
         HashMap<String, Object> responseMap = new HashMap<>();
+        responseMap.put("status", 200);
         if(userService.checkIsMember(kakaoDto.getKakao_id())) {
-            user = userService.signIn(kakaoDto.getKakao_id());
-            responseMap.put("type", "카카오 로그인");
-        }
-        else {
-            user = userService.signUp(kakaoDto);
-            responseMap.put("type", "카카오 회원가입");
-        }
-        if (user != null) {
-            responseMap.put("status", 200);
-            responseMap.put("message", "로그인 성공");
+            User user = userService.signIn(kakaoDto.getKakao_id());
+            //가입 여부 확인
+            responseMap.put("message", "가입된 사용자");
+            responseMap.put("data", true);
             responseMap.put("token", jwtTokenProvider.createToken(user.getEmail(), user.getRoles()));
-            return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
         }
         else {
-            responseMap.put("status", 401);
-            responseMap.put("message", "소셜 로그인 오류");
-            return new ResponseEntity<HashMap>(responseMap, HttpStatus.UNAUTHORIZED);
+            responseMap.put("message", "가입되지 않은 사용자");
+            responseMap.put("data", false);
         }
+        return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
     }
 
     @PostMapping("/user/signin")
