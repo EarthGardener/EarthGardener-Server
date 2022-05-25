@@ -53,7 +53,7 @@ public class PostDto {
         @JsonProperty
         private Integer exp;
         @JsonProperty
-        private List<Pair<Integer, String>> checklist;
+        private List<CheckMent.CheckMentAndExp> checklist;
 
         public PostInfoDto(Post post){
             id = post.getId();
@@ -75,7 +75,11 @@ public class PostDto {
         }
 
         public void addCheckList(Integer exp, String ment){
-            checklist.add(Pair.of(exp, ment));
+            checklist.add(new CheckMent.CheckMentAndExp(exp, ment));
+        }
+
+        public void setChecklist(List<CheckMent.CheckMentAndExp> list){
+            this.checklist = list;
         }
     }
 }
