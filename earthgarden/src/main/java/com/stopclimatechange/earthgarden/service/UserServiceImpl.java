@@ -1,8 +1,11 @@
 package com.stopclimatechange.earthgarden.service;
 
+import com.stopclimatechange.earthgarden.config.JwtTokenProvider;
+import com.stopclimatechange.earthgarden.domain.RefreshToken;
 import com.stopclimatechange.earthgarden.domain.Tree;
 import com.stopclimatechange.earthgarden.domain.User;
 import com.stopclimatechange.earthgarden.domain.UserDto;
+import com.stopclimatechange.earthgarden.repository.RefreshTokenRepository;
 import com.stopclimatechange.earthgarden.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +21,8 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;                              // 패스워드 인코더
     private final ImageUploadService imageUploadService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
     public User signUp(String email, String pw, String nickname, MultipartFile image) {
@@ -41,6 +46,42 @@ public class UserServiceImpl implements UserService{
         else if (!passwordEncoder.matches(loginDto.getPw(), user.getPw()))           // 패스워드 확인
             return null;
 
+        RefreshToken refreshToken;
+        if(!refreshTokenRepository.existsByUserId(user.getId())){
+            refreshToken = new RefreshToken(user.getId(), jwtTokenProvider.createRefreshToken());
+            refreshTokenRepository.save(refreshToken);
+        }
+        else {
+            refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElseGet(null);
+            refreshTokenRepository.save(refreshToken);
+        }
+        return user;
+    }
+
+    public String giveRefreshToken(User user){
+        return refreshTokenRepository.findByUserId(user.getId()).orElseGet(null).getRefreshToken();
+    }
+
+    @Override
+    public User reissueTokenByRefreshToken(String token, String refreshToken){
+
+        if(!jwtTokenProvider.validateTokenExceptExpiration(token)){
+            return null;
+        }
+
+        if(!jwtTokenProvider.validateToken(refreshToken)){
+            return null;
+        }
+
+        RefreshToken refreshTokenObject = refreshTokenRepository.findByRefreshToken(refreshToken).orElseGet(null);
+        if(refreshTokenObject == null){
+            return null;
+        }
+
+        User user = userRepository.findById(refreshTokenObject.getUserId()).orElseGet(null);
+        if(user == null){
+            return null;
+        }
         return user;
     }
 

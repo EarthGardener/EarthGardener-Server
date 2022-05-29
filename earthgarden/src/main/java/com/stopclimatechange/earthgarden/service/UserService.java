@@ -14,6 +14,10 @@ public interface UserService {
     // 로그인할 이메일 & 패스워드 체크
     public User signIn(UserDto.LoginDto userDto);
 
+    public String giveRefreshToken(User user);
+
+    public User reissueTokenByRefreshToken(String token, String refreshToken);
+
     public Boolean validateDuplicateEmail(String email);
 
     public Boolean validateDuplicateNickname(String nickname);

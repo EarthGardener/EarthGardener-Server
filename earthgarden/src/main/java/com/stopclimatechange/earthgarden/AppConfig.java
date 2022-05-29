@@ -1,5 +1,8 @@
 package com.stopclimatechange.earthgarden;
 
+import com.stopclimatechange.earthgarden.config.JwtTokenProvider;
+import com.stopclimatechange.earthgarden.domain.RefreshToken;
+import com.stopclimatechange.earthgarden.repository.RefreshTokenRepository;
 import com.stopclimatechange.earthgarden.repository.UserRepository;
 import com.stopclimatechange.earthgarden.service.ImageUploadService;
 import com.stopclimatechange.earthgarden.service.UserService;
@@ -16,10 +19,12 @@ public class AppConfig{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ImageUploadService imageUploadService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Bean
     public UserService signUpService(){
-        return new UserServiceImpl(userRepository, passwordEncoder, imageUploadService);
+        return new UserServiceImpl(userRepository, passwordEncoder, imageUploadService, jwtTokenProvider, refreshTokenRepository);
     }
 
 }
