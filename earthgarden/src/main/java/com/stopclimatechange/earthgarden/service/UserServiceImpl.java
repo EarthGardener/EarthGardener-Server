@@ -18,6 +18,7 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;                              // 패스워드 인코더
     private final ImageUploadService imageUploadService;
+    private final KakaoService kakaoService;
 
     @Override
     public User signUp(String email, String pw, String nickname, MultipartFile image) {
@@ -34,19 +35,25 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User signUp(UserDto.KakaoDto kakaoDto) {
+    public User signUp(UserDto.SocialSignupDto socialSignupDto) {
+        String socialId = null;
+        if(socialSignupDto.getSocialType().equals("kakao"))
+            socialId = kakaoService.getUserId(socialSignupDto.getSocialToken());
+
+        if(socialId == null)
+            return null;
+
         UserDto userDto = new UserDto();
         userDto.setRoles(Collections.singletonList("ROLE_USER"));
-        System.out.println(kakaoDto.getKakao_id());
-        userDto.setSocialId("kakao/" + kakaoDto.getKakao_id().toString());
-        userDto.setEmail(kakaoDto.getEmail());
-        userDto.setNickname(kakaoDto.getNickname());
-        if(kakaoDto.getImage_url() == null)
+        userDto.setSocialId("kakao/" + socialId);
+        userDto.setEmail(socialSignupDto.getEmail());
+        userDto.setNickname(socialSignupDto.getNickname());
+        if(socialSignupDto.getImage_url() == null)
             userDto.setImage_url(null);
-        else if(kakaoDto.getImage_url().length()==0)
+        else if(socialSignupDto.getImage_url().length()==0)
             userDto.setImage_url(null);
         else
-            userDto.setImage_url(kakaoDto.getImage_url());
+            userDto.setImage_url(socialSignupDto.getImage_url());
         Tree tree = new Tree();
         return userRepository.save(new User(userDto, tree));
     }
@@ -64,9 +71,16 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User signIn(String socialId) {
+    public User signIn(String socialType, String socialToken) {
+        String socialId = null;
+        if(socialType.equals("kakao"))
+            socialId = kakaoService.getUserId(socialToken);
+
+        if(socialId == null)
+            return null;
+
         socialId = "kakao/" + socialId;
-        User user = userRepository.findByPw(socialId).orElseGet(()->null);
+        User user = userRepository.findBySocialId(socialId).orElseGet(()->null);
         return user;
     }
 

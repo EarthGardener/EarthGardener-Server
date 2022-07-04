@@ -2,6 +2,7 @@ package com.stopclimatechange.earthgarden;
 
 import com.stopclimatechange.earthgarden.repository.UserRepository;
 import com.stopclimatechange.earthgarden.service.ImageUploadService;
+import com.stopclimatechange.earthgarden.service.KakaoService;
 import com.stopclimatechange.earthgarden.service.UserService;
 import com.stopclimatechange.earthgarden.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +17,11 @@ public class AppConfig{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ImageUploadService imageUploadService;
+    private final KakaoService kakaoService;
 
     @Bean
     public UserService signUpService(){
-        return new UserServiceImpl(userRepository, passwordEncoder, imageUploadService);
+        return new UserServiceImpl(userRepository, passwordEncoder, imageUploadService, kakaoService);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.stopclimatechange.earthgarden.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -68,12 +69,31 @@ public class UserDto {
 
     @Getter
     @Setter
-    public static class KakaoDto{
+    public static class SocialSignupDto{
 
         @NotNull
-        private String kakao_id;
+        @JsonProperty("social_token")
+        private String socialToken;
+
+        @NotNull
+        @JsonProperty("social_type")
+        private String socialType;
+
         private String nickname;
         private String image_url;
         private String email;
+    }
+
+    @Getter
+    @Setter
+    public static class SocialSigninDto{
+
+        @NotNull
+        @JsonProperty("social_type")
+        private String socialType;
+
+        @NotNull
+        @JsonProperty("social_token")
+        private String socialToken;
     }
 }
