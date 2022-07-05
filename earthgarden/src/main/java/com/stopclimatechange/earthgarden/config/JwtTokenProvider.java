@@ -27,7 +27,7 @@ public class JwtTokenProvider {
     private String secretKey = KeyService.getSecretKey();
 
     /* 토큰 유효시간 */
-    private long tokenValidTime = /*3 * 60 * 60 **/ 1000L;  // 3시간
+    private long tokenValidTime = 3 * 60 * 60 * 1000L;  // 3시간
     private long refreshTokenValidTime = 365 * 24 * 60 * 60 * 1000L; //1년
 
     private final UserDetailsService userDetailsService;
