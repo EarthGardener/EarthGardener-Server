@@ -33,6 +33,7 @@ public class UserServiceImpl implements UserService{
         userDto.setEmail(email);
         userDto.setNickname(nickname);
         userDto.setPw(passwordEncoder.encode(pw));           // 비밀번호 암호화
+
         Tree tree = new Tree();
         if(!image.isEmpty())
             userDto.setImage_url(imageUploadService.restore(image));
@@ -53,6 +54,7 @@ public class UserServiceImpl implements UserService{
         userDto.setSocialId("kakao/" + socialId);
         userDto.setEmail(socialSignupDto.getEmail());
         userDto.setNickname(socialSignupDto.getNickname());
+
         if(socialSignupDto.getImage_url() == null)
             userDto.setImage_url(null);
         else if(socialSignupDto.getImage_url().length()==0)
@@ -60,6 +62,7 @@ public class UserServiceImpl implements UserService{
         else
             userDto.setImage_url(socialSignupDto.getImage_url());
         Tree tree = new Tree();
+
         return userRepository.save(new User(userDto, tree));
     }
 
@@ -82,6 +85,13 @@ public class UserServiceImpl implements UserService{
             refreshTokenRepository.save(refreshToken);
         }
         return user;
+    }
+
+    @Override
+    public String issueRefreshToken(User user){
+        RefreshToken refreshToken = new RefreshToken(user.getId(), jwtTokenProvider.createRefreshToken());
+        refreshTokenRepository.save(refreshToken);
+        return refreshToken.getRefreshToken();
     }
 
     public String giveRefreshToken(User user){
@@ -110,6 +120,7 @@ public class UserServiceImpl implements UserService{
         }
         return user;
     }
+
 
     @Override
     public User signIn(String socialType, String socialToken) {

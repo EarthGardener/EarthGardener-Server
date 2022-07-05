@@ -59,6 +59,7 @@ public class UserController {
                 responseMap.put("status", 200);
                 responseMap.put("message", "로그인 성공");
                 responseMap.put("token", jwtTokenProvider.createToken(user.getSocialId(), user.getRoles()));
+                responseMap.put("refresh_token", userService.giveRefreshToken(user));
                 return new ResponseEntity<>(responseMap, HttpStatus.OK);
             }
         }
@@ -84,6 +85,7 @@ public class UserController {
         responseMap.put("status", 200);
         responseMap.put("message", "회원가입 성공");
         responseMap.put("token", jwtTokenProvider.createToken(user.getSocialId(), user.getRoles()));
+        responseMap.put("refresh_token", userService.issueRefreshToken(user));
         return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
     }
 
@@ -155,35 +157,6 @@ public class UserController {
         }
     }
 
-
-//    @PostMapping("/user/signup/kakao")
-//    public ResponseEntity<HashMap> kakaoJoin(@RequestBody UserDto.KakaoDto kakaoDto) {
-//        HashMap<String, Object> responseMap = new HashMap<>();
-//        userService.signUp(kakaoDto);
-//        responseMap.put("status", 200);
-//        responseMap.put("message", "회원가입 성공");
-//        return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
-//    }
-//
-//    @PostMapping("/user/signin/kakao")
-//    public ResponseEntity<HashMap> kakaoLogin(@RequestBody UserDto.KakaoDto kakaoDto){
-//
-//        HashMap<String, Object> responseMap = new HashMap<>();
-//        responseMap.put("status", 200);
-//        if(userService.checkIsMember(kakaoDto.getKakao_id())) {
-//            User user = userService.signIn(kakaoDto.getKakao_id());
-//            //가입 여부 확인
-//            responseMap.put("message", "가입된 사용자");
-//            responseMap.put("data", true);
-//            responseMap.put("token", jwtTokenProvider.createToken(user.getEmail(), user.getRoles()));
-//        }
-//        else {
-//            responseMap.put("message", "가입되지 않은 사용자");
-//            responseMap.put("data", false);
-//        }
-//        return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
-//    }
-
     @PostMapping("/user/signin")
     public ResponseEntity<HashMap> login(@RequestBody UserDto.LoginDto loginDto) {
 
@@ -220,7 +193,7 @@ public class UserController {
         }
         else{
             responseMap.put("status", 401);
-            responseMap.put("message", "잘못되었거나 만료된 refresh token");
+            responseMap.put("message", "잘못되었거나 만료된 refresh token 재로그인 필요");
             return new ResponseEntity<HashMap>(responseMap, HttpStatus.UNAUTHORIZED);
         }
     }

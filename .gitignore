@@ -1,3 +1,4 @@
 
 earthgarden/src/main/resources/application.yml
 earthgarden/build.gradle
+earthgarden/src/main/java/com/stopclimatechange/earthgarden/util/BaseURLService.java

@@ -16,7 +16,8 @@ public interface UserService {
     public User signIn(UserDto.LoginDto userDto);
     public User signIn(String socialType, String socialToken);
 
-    public Boolean checkIsMember(String social_id);
+
+    public String issueRefreshToken(User user);
 
     public String giveRefreshToken(User user);
 

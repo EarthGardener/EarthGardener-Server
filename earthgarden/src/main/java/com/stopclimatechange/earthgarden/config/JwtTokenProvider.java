@@ -1,5 +1,6 @@
 package com.stopclimatechange.earthgarden.config;
 
+import com.stopclimatechange.earthgarden.util.KeyService;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +24,7 @@ import java.util.List;
 public class JwtTokenProvider {
 
     @Value("spring.jwt.secret")                     // application.properties에서 secretKey 주입
-    private String secretKey = "earthGardener-jwt-authorization";
+    private String secretKey = KeyService.getSecretKey();
 
     /* 토큰 유효시간 */
     private long tokenValidTime = /*3 * 60 * 60 **/ 1000L;  // 3시간
