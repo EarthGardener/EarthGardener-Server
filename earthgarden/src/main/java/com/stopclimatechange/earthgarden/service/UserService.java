@@ -18,6 +18,10 @@ public interface UserService {
 
     public Boolean checkIsMember(String social_id);
 
+    public String giveRefreshToken(User user);
+
+    public User reissueTokenByRefreshToken(String token, String refreshToken);
+
     public Boolean validateDuplicateEmail(String email);
 
     public Boolean validateDuplicateNickname(String nickname);

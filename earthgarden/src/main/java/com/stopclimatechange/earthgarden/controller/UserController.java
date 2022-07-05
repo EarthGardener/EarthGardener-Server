@@ -191,15 +191,36 @@ public class UserController {
 
         User user = userService.signIn(loginDto);
         HashMap<String, Object> responseMap = new HashMap<>();
+
         if (user != null) {
             responseMap.put("status", 200);
             responseMap.put("message", "로그인 성공");
             responseMap.put("token", jwtTokenProvider.createToken(user.getEmail(), user.getRoles()));
+            responseMap.put("refresh_token", userService.giveRefreshToken(user));
             return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
         }
         else {
             responseMap.put("status", 401);
             responseMap.put("message", "이메일 또는 비밀번호 오류");
+            return new ResponseEntity<HashMap>(responseMap, HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PostMapping("/user/refresh")
+    public ResponseEntity<HashMap> reissueToken(@RequestHeader(value="X-AUTH-TOKEN") String token,
+                                                @RequestHeader(value="REFRESH-TOKEN") String refreshToken){
+
+        User user = userService.reissueTokenByRefreshToken(token, refreshToken);
+        HashMap<String, Object> responseMap = new HashMap<>();
+        if (user != null) {
+            responseMap.put("status", 200);
+            responseMap.put("message", "토큰 재발급 성공");
+            responseMap.put("token", jwtTokenProvider.createToken(user.getEmail(), user.getRoles()));
+            return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
+        }
+        else{
+            responseMap.put("status", 401);
+            responseMap.put("message", "잘못되었거나 만료된 refresh token");
             return new ResponseEntity<HashMap>(responseMap, HttpStatus.UNAUTHORIZED);
         }
     }
