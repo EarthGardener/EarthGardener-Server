@@ -58,7 +58,7 @@ public class UserController {
             else {
                 responseMap.put("status", 200);
                 responseMap.put("message", "로그인 성공");
-                responseMap.put("token", jwtTokenProvider.createToken(user.getSocialId(), user.getRoles()));
+                responseMap.put("token", jwtTokenProvider.createToken(user.getEmail(), user.getRoles()));
                 responseMap.put("refresh_token", userService.giveRefreshToken(user));
                 return new ResponseEntity<>(responseMap, HttpStatus.OK);
             }
@@ -84,7 +84,7 @@ public class UserController {
 
         responseMap.put("status", 200);
         responseMap.put("message", "회원가입 성공");
-        responseMap.put("token", jwtTokenProvider.createToken(user.getSocialId(), user.getRoles()));
+        responseMap.put("token", jwtTokenProvider.createToken(user.getEmail(), user.getRoles()));
         responseMap.put("refresh_token", userService.issueRefreshToken(user));
         return new ResponseEntity<HashMap>(responseMap, HttpStatus.OK);
     }
