@@ -10,13 +10,18 @@ public interface UserService {
 
     //회원가입
     public User signUp(String email, String pw, String nickname, MultipartFile image);
-    public User signUp(UserDto.KakaoDto kakaoDto);
+    public User signUp(UserDto.SocialSignupDto socialSignupDto);
 
     // 로그인할 이메일 & 패스워드 체크
     public User signIn(UserDto.LoginDto userDto);
-    public User signIn(String social_id);
+    public User signIn(String socialType, String socialToken);
 
-    public Boolean checkIsMember(String social_id);
+
+    public String issueRefreshToken(User user);
+
+    public String giveRefreshToken(User user);
+
+    public User reissueTokenByRefreshToken(String token, String refreshToken);
 
     public Boolean validateDuplicateEmail(String email);
 

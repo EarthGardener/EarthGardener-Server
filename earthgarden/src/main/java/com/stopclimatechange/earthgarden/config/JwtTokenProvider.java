@@ -1,9 +1,7 @@
 package com.stopclimatechange.earthgarden.config;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.stopclimatechange.earthgarden.util.KeyService;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,10 +24,11 @@ import java.util.List;
 public class JwtTokenProvider {
 
     @Value("spring.jwt.secret")                     // application.properties에서 secretKey 주입
-    private String secretKey = "earthGardener-jwt-authorization";
+    private String secretKey = KeyService.getSecretKey();
 
     /* 토큰 유효시간 */
-    private long tokenValidTime = 60 * 180 * 1000L;  // 3시간
+    private long tokenValidTime = 3 * 60 * 60 * 1000L;  // 3시간
+    private long refreshTokenValidTime = 365 * 24 * 60 * 60 * 1000L; //1년
 
     private final UserDetailsService userDetailsService;
 
@@ -52,6 +51,15 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    public String createRefreshToken() {
+        Date now = new Date();
+        return Jwts.builder()
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
+    }
+
     /* 인증 성공 시 SecurityContextHolder에 저장할 Authentication 객체 생성 */
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserEmail(token));
@@ -60,7 +68,9 @@ public class JwtTokenProvider {
 
     /* 토큰에서 회원 정보 추출 */
     public String getUserEmail(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        if(validateToken(token))
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        else return null;
     }
 
     /* Request의 Header에서 token 값 가져오기 ("X-AUTH-TOKEN": "TOKEN VALUE") */
@@ -73,6 +83,18 @@ public class JwtTokenProvider {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
             return !claims.getBody().getExpiration().before(new Date());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean validateTokenExceptExpiration(String jwtToken) {
+        try {
+            if(validateToken(jwtToken)) return false;
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+            return claims.getBody().getExpiration().before(new Date());
+        } catch(ExpiredJwtException e) {
+            return true;
         } catch (Exception e) {
             return false;
         }

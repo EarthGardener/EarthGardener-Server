@@ -1,8 +1,11 @@
 package com.stopclimatechange.earthgarden.service;
 
+import com.stopclimatechange.earthgarden.config.JwtTokenProvider;
+import com.stopclimatechange.earthgarden.domain.RefreshToken;
 import com.stopclimatechange.earthgarden.domain.Tree;
 import com.stopclimatechange.earthgarden.domain.User;
 import com.stopclimatechange.earthgarden.domain.UserDto;
+import com.stopclimatechange.earthgarden.repository.RefreshTokenRepository;
 import com.stopclimatechange.earthgarden.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,14 +21,19 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;                              // 패스워드 인코더
     private final ImageUploadService imageUploadService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final KakaoService kakaoService;
 
     @Override
     public User signUp(String email, String pw, String nickname, MultipartFile image) {
         UserDto userDto = new UserDto();
         userDto.setRoles(Collections.singletonList("ROLE_USER"));
+        userDto.setSocialId("local");
         userDto.setEmail(email);
         userDto.setNickname(nickname);
         userDto.setPw(passwordEncoder.encode(pw));           // 비밀번호 암호화
+
         Tree tree = new Tree();
         if(!image.isEmpty())
             userDto.setImage_url(imageUploadService.restore(image));
@@ -33,14 +41,28 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User signUp(UserDto.KakaoDto kakaoDto) {
+    public User signUp(UserDto.SocialSignupDto socialSignupDto) {
+        String socialId = null;
+        if(socialSignupDto.getSocialType().equals("kakao"))
+            socialId = kakaoService.getUserId(socialSignupDto.getSocialToken());
+
+        if(socialId == null)
+            return null;
+
         UserDto userDto = new UserDto();
         userDto.setRoles(Collections.singletonList("ROLE_USER"));
-        userDto.setEmail(null);
-        userDto.setNickname(kakaoDto.getNickname());
-        userDto.setPw(kakaoDto.getKakao_id().toString());
-        userDto.setImage_url(kakaoDto.getImage_url());
+        userDto.setSocialId("kakao/" + socialId);
+        userDto.setEmail(socialSignupDto.getEmail());
+        userDto.setNickname(socialSignupDto.getNickname());
+
+        if(socialSignupDto.getImage_url() == null)
+            userDto.setImage_url(null);
+        else if(socialSignupDto.getImage_url().length()==0)
+            userDto.setImage_url(null);
+        else
+            userDto.setImage_url(socialSignupDto.getImage_url());
         Tree tree = new Tree();
+
         return userRepository.save(new User(userDto, tree));
     }
 
@@ -53,17 +75,70 @@ public class UserServiceImpl implements UserService{
         else if (!passwordEncoder.matches(loginDto.getPw(), user.getPw()))           // 패스워드 확인
             return null;
 
+        RefreshToken refreshToken;
+        if(!refreshTokenRepository.existsByUserId(user.getId())){
+            refreshToken = new RefreshToken(user.getId(), jwtTokenProvider.createRefreshToken());
+            refreshTokenRepository.save(refreshToken);
+        }
+        else {
+            refreshToken = refreshTokenRepository.findByUserId(user.getId()).orElseGet(null);
+            refreshTokenRepository.save(refreshToken);
+        }
         return user;
     }
+
     @Override
-    public User signIn(String social_id) {
-        User user = userRepository.findByPw(social_id).orElseGet(()->null);
+    public String issueRefreshToken(User user){
+        RefreshToken refreshToken = new RefreshToken(user.getId(), jwtTokenProvider.createRefreshToken());
+        refreshTokenRepository.save(refreshToken);
+        return refreshToken.getRefreshToken();
+    }
+
+    public String giveRefreshToken(User user){
+        return refreshTokenRepository.findByUserId(user.getId()).orElseGet(null).getRefreshToken();
+    }
+
+    @Override
+    public User reissueTokenByRefreshToken(String token, String refreshToken){
+
+        if(!jwtTokenProvider.validateTokenExceptExpiration(token)){
+            return null;
+        }
+
+        if(!jwtTokenProvider.validateToken(refreshToken)){
+            return null;
+        }
+
+        RefreshToken refreshTokenObject = refreshTokenRepository.findByRefreshToken(refreshToken).orElseGet(null);
+        if(refreshTokenObject == null){
+            return null;
+        }
+
+        User user = userRepository.findById(refreshTokenObject.getUserId()).orElseGet(null);
+        if(user == null){
+            return null;
+        }
         return user;
     }
 
 
-    public Boolean checkIsMember(String social_id){
-        return userRepository.existsByPw(social_id);
+    @Override
+    public User signIn(String socialType, String socialToken) {
+        String socialId = null;
+        if(socialType.equals("kakao"))
+            socialId = kakaoService.getUserId(socialToken);
+
+        if(socialId == null)
+            return null;
+
+        socialId = "kakao/" + socialId;
+        User user = userRepository.findBySocialId(socialId).orElseGet(()->null);
+        return user;
+    }
+
+
+    public Boolean checkIsMember(String socialId){
+        return userRepository.existsBySocialId("kakao/" + socialId);
     }
 
     @Override
